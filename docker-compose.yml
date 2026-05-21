@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  # Наш Центральный Асинхронный REST API Шлюз (FastAPI)
+  app:
+    build: .
+    image: rellixcore/qspro:1.0.0
+    container_name: qspro_app
+    restart: always
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/code
+    environment:
+      - DATABASE_URL=postgresql://cyber_admin:baroque_pass@db:5432/qspro_vault
+      - REDIS_URL=redis://redis:6379/0
+      - SECRET_KEY=GITS_SECTION_9_ULTRA_SECRET_2026_KEY_NEXO
+      - ALGORITHM=HS256
+      - ACCESS_TOKEN_EXPIRE_MINUTES=1440
+    depends_on:
+      - db
+      - redis
+
+  # Промышленный Хранитель Базы Данных (PostgreSQL)
+  db:
+    image: postgres:15-alpine
+    container_name: qspro_db
+    restart: always
+    environment:
+      - POSTGRES_USER=cyber_admin
+      - POSTGRES_PASSWORD=baroque_pass
+      - POSTGRES_DB=qspro_vault
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  # Сверхскоростной Кэш и Брокер Уведомлений (Redis)
+  redis:
+    image: redis:7-alpine
+    container_name: qspro_redis
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+volumes:
+  postgres_data:
+  redis_data:

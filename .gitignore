@@ -1,0 +1,6 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.env
+quick-snippet-pro-jJeSP6s7-py3.13/

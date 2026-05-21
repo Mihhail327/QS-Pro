@@ -1,0 +1,31 @@
+{
+  "short_name": "QS Pro",
+  "name": "Quick Snippet Professional",
+  "description": "Secure AES-256 encrypted code and note manager.",
+  "icons": [
+    {
+      "src": "/static/js/icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/static/js/icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#0B1120",
+  "display": "standalone",
+  "scope": "/",
+  "theme_color": "#10B981",
+  "shortcuts": [
+    {
+      "name": "New Snippet",
+      "short_name": "Add",
+      "url": "/?openModal=code",
+      "icons": [{ "src": "/static/js/icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}

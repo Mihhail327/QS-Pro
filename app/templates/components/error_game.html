@@ -1,0 +1,13 @@
+<div x-show="hasError" x-cloak class="fixed inset-0 z-[100] bg-gray-900 flex flex-col items-center justify-center p-4 text-center">
+    <div class="mb-8">
+        <h1 class="text-4xl font-black text-red-500 mb-2 uppercase">Сервер прилег отдохнуть</h1>
+        <p class="text-gray-400">Пока мы чиним, помоги кубику не упасть!</p>
+        <p class="text-[10px] text-gray-600 mt-2 uppercase font-bold tracking-[0.2em]">Пробел или клик — Прыжок</p>
+    </div>
+    
+    <canvas id="gameCanvas" width="320" height="400" class="bg-gray-800 rounded-3xl border-4 border-gray-700 shadow-2xl"></canvas>
+    
+    <button onclick="location.reload()" class="mt-8 px-10 py-4 bg-white text-black font-bold rounded-2xl hover:scale-105 transition-all">
+        ОБНОВИТЬ СТРАНИЦУ
+    </button>
+</div>

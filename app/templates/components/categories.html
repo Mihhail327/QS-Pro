@@ -1,0 +1,19 @@
+<div class="flex flex-wrap gap-4 mb-10 overflow-x-auto pb-2 custom-scrollbar">
+    <template x-for="cat in [
+        {id: 'all', emoji: '🧠', title: 'Все', color: 'hover:border-white'},
+        {id: 'idea', emoji: '💡', title: 'Идеи', color: 'hover:border-blue-500'},
+        {id: 'code', emoji: '💻', title: 'Код', color: 'hover:border-emerald-500', dev: true},
+        {id: 'study', emoji: '🎓', title: 'Учеба', color: 'hover:border-orange-500'},
+        {id: 'important', emoji: '📌', title: 'Важное', color: 'hover:border-red-500'}
+    ]">
+        <div x-show="!cat.dev || role === 'dev'" 
+             hx-get="/snippets/list"
+             :hx-vals="`js:{category: '${cat.id}'}`"
+             hx-target="#snippets-list"
+             :class="cat.color"
+             class="flex-1 min-w-[110px] max-w-[160px] bg-gray-800/40 p-4 rounded-2xl border border-gray-700 transition-all cursor-pointer group text-center active:scale-95 shadow-lg backdrop-blur-md">
+            <div class="text-2xl mb-1 group-hover:scale-110 transition duration-300" x-text="cat.emoji"></div>
+            <h3 class="text-[10px] font-black uppercase tracking-widest text-gray-500 group-hover:text-white transition-colors" x-text="cat.title"></h3>
+        </div>
+    </template>
+</div>
