@@ -1,57 +1,88 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="ru" class="bg-[#070a13] text-gray-300 antialiased">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Вход — QuickSnippet Pro</title>
+    <title>Врата — QuickSnippet Pro</title>
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/htmx.org@1.9.10"></script>
-</head>
-<body class="bg-gray-900 text-white min-h-screen flex items-center justify-center p-4 font-sans">
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
-    <div class="w-full max-w-md bg-gray-800 p-8 rounded-3xl border border-gray-700 shadow-2xl">
-        <div class="text-center mb-8">
-            <h1 class="text-4xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-emerald-400">
-                QS Pro
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        midnight: '#070a13',
+                        electric: '#00f2fe',
+                        acid: '#39ff14',
+                        darkglass: '#0e1726'
+                    },
+                    boxShadow: {
+                        'neon': '0 0 15px rgba(0, 242, 254, 0.15)',
+                        'neon-strong': '0 0 25px rgba(0, 242, 254, 0.4)',
+                        'acid-glow': '0 0 15px rgba(57, 255, 20, 0.2)'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="min-h-screen flex items-center justify-center relative overflow-hidden selection:bg-electric selection:text-midnight">
+
+    <div class="absolute inset-0 opacity-[0.03] pointer-events-none" 
+         style="background-image: url('data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E');">
+    </div>
+
+    <div class="relative z-10 w-full max-w-md p-8 rounded-2xl bg-darkglass/60 backdrop-blur-xl border border-electric/20 shadow-neon">
+        
+        <div class="text-center mb-10">
+            <h1 class="text-3xl font-bold text-electric tracking-widest uppercase shadow-electric">
+                QS<span class="text-acid">_Pro</span>
             </h1>
-            <p class="text-gray-400 mt-2">Авторизация</p>
+            <p class="text-xs text-gray-500 mt-2 tracking-widest uppercase font-mono">Авторизация терминала</p>
         </div>
 
-        <form hx-post="/auth/login" hx-target="#auth-message" class="space-y-5">
-            <div>
-                <label class="block text-sm font-medium text-gray-400 mb-2 ml-1">Логин</label>
-                <input type="text" name="username" required 
-                       class="w-full bg-gray-900 border border-gray-700 p-4 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition text-white">
-            </div>
+        <form hx-post="/auth/login" hx-target="#auth-message" class="space-y-6">
             
-            <div>
-                <label class="block text-sm font-medium text-gray-400 mb-2 ml-1">Пароль</label>
-                <input type="password" name="password" required 
-                       class="w-full bg-gray-900 border border-gray-700 p-4 rounded-2xl focus:ring-2 focus:ring-blue-500 outline-none transition text-white">
+            <div class="space-y-2">
+                <label class="block text-xs font-mono text-electric/70 ml-1">ИДЕНТИФИКАТОР / ЛОГИН</label>
+                <input type="text" name="username" required
+                       class="w-full bg-midnight/50 border border-gray-800 focus:border-electric rounded-xl px-4 py-3 text-gray-200 outline-none transition-all duration-300 placeholder-gray-700 focus:shadow-neon"
+                       placeholder="Nexus_ID">
             </div>
 
-            <label class="flex items-center gap-3 text-sm text-gray-400 cursor-pointer ml-1">
-                <input type="checkbox" name="is_dev" value="true" class="w-5 h-5 rounded border-gray-700 bg-gray-900 text-blue-600">
+            <div class="space-y-2">
+                <label class="block text-xs font-mono text-electric/70 ml-1">КРИПТО-КЛЮЧ / ПАРОЛЬ</label>
+                <input type="password" name="password" required
+                       class="w-full bg-midnight/50 border border-gray-800 focus:border-electric rounded-xl px-4 py-3 text-gray-200 outline-none transition-all duration-300 placeholder-gray-700 focus:shadow-neon"
+                       placeholder="••••••••••••">
+            </div>
+
+            <label class="flex items-center gap-3 text-xs font-mono text-gray-400 cursor-pointer ml-1 hover:text-electric/80 transition-colors">
+                <input type="checkbox" name="is_dev" value="true" 
+                       class="w-4 h-4 rounded border-gray-700 bg-midnight text-electric accent-electric focus:ring-electric focus:ring-offset-midnight">
                 Я разработчик (Dev Mode)
             </label>
 
             <div class="grid grid-cols-2 gap-4 pt-2">
                 <button type="button" hx-post="/auth/register" hx-target="#auth-message"
-                        class="bg-gray-700 hover:bg-gray-600 py-4 rounded-2xl font-semibold transition active:scale-95">
+                        class="bg-gray-800/50 hover:bg-gray-700/50 border border-gray-700 hover:border-gray-500 text-gray-300 py-3 rounded-xl font-mono text-sm uppercase tracking-wider transition-all duration-300 active:scale-95">
                     Регистрация
                 </button>
                 <button type="submit" 
-                        class="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 py-4 rounded-2xl font-bold shadow-lg transition active:scale-95">
-                    Войти
+                        class="bg-electric/10 hover:bg-electric/20 border border-electric text-electric shadow-[inset_0_0_10px_rgba(0,242,254,0.1)] py-3 rounded-xl font-bold font-mono text-sm uppercase tracking-wider transition-all duration-300 hover:shadow-neon-strong active:scale-95">
+                    Вход
                 </button>
             </div>
 
-            <div id="auth-message" class="text-center text-sm font-medium min-h-[20px]"></div>
+            <div id="auth-message" class="text-center text-sm font-mono min-h-[20px] transition-all duration-300"></div>
         </form>
 
-        <div class="mt-8 text-center border-t border-gray-700 pt-6">
-            <a href="/" class="text-sm text-gray-500 hover:text-blue-400 transition inline-flex items-center gap-2">
-                <span>←</span> Вернуться на главную
+        <div class="mt-8 text-center border-t border-gray-800/60 pt-6">
+            <a href="/" class="text-xs font-mono text-gray-500 hover:text-electric transition-colors inline-flex items-center gap-2">
+                <span class="text-electric">←</span> Вернуться в ядро
             </a>
         </div>
     </div>

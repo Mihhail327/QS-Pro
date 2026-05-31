@@ -1,123 +1,176 @@
 /**
- * QS PRO - Core Logic & Easter Egg Game
+ * QS PRO - Core Logic & Cyber-Runner Game
  */
 
-// 1. Регистрация Service Worker для PWA
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/static/sw.js')
-            .then(reg => console.log('SW registered'))
-            .catch(err => console.log('SW error', err));
-    });
-}
-
-// 2. Глобальный обработчик ошибок HTMX
-document.body.addEventListener('htmx:responseError', (event) => {
-    // Если сервер вернул 500 ошибку
-    if (event.detail.xhr.status === 500) {
-        // Достукиваемся до данных Alpine.js
-        const alpineRoot = document.querySelector('[x-data]');
-        if (alpineRoot && alpineRoot.__x) {
-            alpineRoot.__x.$data.hasError = true;
-            // Запускаем игру, когда Alpine покажет холст
-            setTimeout(initGame, 100);
+window.triggerGame = function() {
+    window.dispatchEvent(new CustomEvent('open-arcade'));
+    setTimeout(() => {
+        const canvas = document.getElementById('gameCanvas');
+        if (canvas) {
+            initGame();
+        } else {
+            console.error("[ СИСТЕМА ] Холст игры не загрузился.");
         }
+    }, 150);
+};
+
+document.body.addEventListener('htmx:responseError', (event) => {
+    if (event.detail.xhr.status === 500) {
+        window.triggerGame();
     }
 });
 
-// 3. Логика игры "Крипто-Прыжок"
+let gameLoop; 
+
 function initGame() {
     const canvas = document.getElementById('gameCanvas');
     if (!canvas) return;
-
     const ctx = canvas.getContext('2d');
     
-    // Настройки
-    let birdY = 200;
-    let birdV = 0;
-    let pipes = [];
-    let frame = 0;
     let isGameOver = false;
+    let score = 0;
+    let frame = 0;
+    let nextSpawnFrame = 60; // Первое препятствие появится через 1 секунду
+    
+    const playerSize = 25;
+    const groundY = canvas.height - 60; 
+    let playerY = groundY - playerSize;
+    let velocityY = 0;
+    const gravity = 0.6;
+    const jumpPower = -11.5; // Чуть усилили прыжок для высоких скоростей
+    
+    let obstacles = [];
+
+    if (gameLoop) cancelAnimationFrame(gameLoop);
 
     function step() {
         if (isGameOver) return;
 
-        // Физика
-        birdV += 0.25; // Гравитация
-        birdY += birdV;
-
-        // Генерация препятствий
-        if (frame % 90 === 0) {
-            pipes.push({
-                x: canvas.width,
-                y: Math.random() * (canvas.height - 150) + 50,
-                width: 40,
-                height: 400
-            });
+        // 1. Физика
+        velocityY += gravity;
+        playerY += velocityY;
+        
+        if (playerY >= groundY - playerSize) {
+            playerY = groundY - playerSize;
+            velocityY = 0;
         }
 
-        // Движение препятствий
-        pipes.forEach(p => p.x -= 2.5);
-        
-        // Очистка ушедших за экран
-        if (pipes.length > 0 && pipes[0].x < -50) pipes.shift();
+        // 2. Умный спавн (Прогрессивная сложность)
+        if (frame >= nextSpawnFrame) {
+            let obsHeight = 25 + Math.random() * 45; // Высота от 25 до 70
+            obstacles.push({ x: canvas.width, y: groundY - obsHeight, width: 20, height: obsHeight });
+            
+            // Математика сложности:
+            // Базовая пауза начинается со 130 кадров (очень легко) и падает до 45 (очень сложно)
+            let baseDelay = Math.max(45, 130 - Math.floor(score / 15));
+            // Случайный разброс (от 0 до 40 кадров), чтобы ломать ритм
+            let randomVariation = Math.floor(Math.random() * 40); 
+            
+            nextSpawnFrame = frame + baseDelay + randomVariation;
+        }
 
-        // Отрисовка фона
-        ctx.fillStyle = '#111827'; // Tailwind gray-900
+        // 3. Ускорение игры
+        // Начинаем со скорости 3.5 (медленно), максимум - 10.5 (хардкор)
+        let gameSpeed = Math.min(10.5, 3.5 + (score / 400));
+        
+        obstacles.forEach(obs => obs.x -= gameSpeed);
+        if (obstacles.length > 0 && obstacles[0].x < -50) obstacles.shift();
+
+        // 4. Отрисовка фона и Земли
+        ctx.fillStyle = '#070a13'; 
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        // Отрисовка препятствий
-        ctx.fillStyle = '#1f2937'; // Tailwind gray-800
-        pipes.forEach(p => {
-            ctx.fillRect(p.x, p.y, p.width, p.height);
-            // Проверка столкновений
-            if (50 + 20 > p.x && 50 < p.x + p.width && birdY + 20 > p.y) {
-                resetGame();
+        ctx.beginPath();
+        ctx.moveTo(0, groundY);
+        ctx.lineTo(canvas.width, groundY);
+        ctx.strokeStyle = '#00f2fe';
+        ctx.lineWidth = 2;
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = '#00f2fe';
+        ctx.stroke();
+        ctx.shadowBlur = 0;
+
+        // Счёт и Текущая Скорость
+        ctx.fillStyle = '#39ff14';
+        ctx.font = 'bold 18px monospace';
+        ctx.fillText(`СКОРОСТЬ: ${gameSpeed.toFixed(1)}  СЧЕТ: ${score}`, 20, 35);
+
+        // 5. Отрисовка Препятствий и Столкновения
+        ctx.fillStyle = '#39ff14'; 
+        ctx.shadowBlur = 15;
+        ctx.shadowColor = '#39ff14';
+        obstacles.forEach(obs => {
+            ctx.fillRect(obs.x, obs.y, obs.width, obs.height);
+            
+            if (50 < obs.x + obs.width && 50 + playerSize > obs.x && playerY + playerSize > obs.y) {
+                isGameOver = true;
+                ctx.fillStyle = '#ef4444'; 
+                ctx.shadowColor = '#ef4444';
+                ctx.font = 'black 24px monospace';
+                ctx.textAlign = "center";
+                ctx.fillText('СИСТЕМА ВЗЛОМАНА', canvas.width / 2, canvas.height / 2 - 20);
+                
+                ctx.fillStyle = '#6b7280'; 
+                ctx.shadowBlur = 0;
+                ctx.font = '14px monospace';
+                ctx.fillText('Нажми ПРОБЕЛ для рестарта', canvas.width / 2, canvas.height / 2 + 20);
+                ctx.textAlign = "left"; 
             }
         });
+        ctx.shadowBlur = 0;
 
-        // Отрисовка игрока (Квадрат-сниппет)
-        ctx.fillStyle = '#3b82f6'; // Tailwind blue-500
-        ctx.shadowBlur = 15;
-        ctx.shadowColor = '#3b82f6';
-        ctx.fillRect(50, birdY, 20, 20);
-        ctx.shadowBlur = 0; // Сброс тени для остального
+        // 6. Отрисовка Игрока
+        ctx.fillStyle = '#00f2fe'; 
+        ctx.shadowBlur = 20;
+        ctx.shadowColor = '#00f2fe';
+        ctx.fillRect(50, playerY, playerSize, playerSize);
+        ctx.shadowBlur = 0;
 
-        // Проверка падения
-        if (birdY > canvas.height || birdY < -50) {
-            resetGame();
-        }
-
+        score++;
         frame++;
-        requestAnimationFrame(step);
+        
+        if (!isGameOver) {
+            gameLoop = requestAnimationFrame(step);
+        }
     }
 
     function resetGame() {
-        birdY = 200;
-        birdV = 0;
-        pipes = [];
+        playerY = groundY - playerSize;
+        velocityY = 0;
+        obstacles = [];
         frame = 0;
+        score = 0;
+        nextSpawnFrame = 60; // Сброс таймера спавна
+        isGameOver = false;
+        step(); 
     }
 
-    // Управление
     const jump = (e) => {
         if (e.type === 'keydown' && e.code !== 'Space') return;
-        birdV = -5;
+        
+        if (isGameOver) {
+            resetGame();
+            if (e.cancelable) e.preventDefault();
+            return;
+        }
+
+        if (playerY >= groundY - playerSize) {
+            velocityY = jumpPower;
+        }
         if (e.cancelable) e.preventDefault();
     };
+
+    window.removeEventListener('keydown', jump);
+    canvas.removeEventListener('mousedown', jump);
+    canvas.removeEventListener('touchstart', jump);
 
     window.addEventListener('keydown', jump);
     canvas.addEventListener('mousedown', jump);
     canvas.addEventListener('touchstart', jump, {passive: false});
 
-    // Поехали!
     step();
 }
 
-/**
- * Хелпер для очистки формы после HTMX запроса
- * Вызывается через @htmx:after-request в HTML
- */
 window.resetSnippetForm = function(event) {
     if (event.detail.successful) {
         event.detail.elt.reset();

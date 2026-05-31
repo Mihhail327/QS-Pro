@@ -1,27 +1,90 @@
-const CACHE_NAME = 'qs-pro-v1';
-// Список файлов, которые приложение сохранит в память телефона
-const ASSETS = [
-  '/',
-  '/static/js/icon-192.png',
-  '/static/js/icon-512.png',
-  '/static/manifest.json'
+const CACHE_NAME = 'qs-pro-v2-cyber-baroque';
+
+// Базовый арсенал: то, что нужно закэшировать при установке
+const STATIC_ASSETS = [
+    '/',
+    '/static/css/style.css',
+    '/static/js/game.js',
+    '/static/js/icon-192.png',
+    '/static/js/icon-512.png',
+    '/static/js/manifest.json'
 ];
 
-// Установка: открываем хранилище и записываем туда иконки
+// 1. УСТАНОВКА: Прокачиваем кэш
 self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      console.log('[SW] Кэшируем ресурсы');
-      return cache.addAll(ASSETS);
-    })
-  );
+    self.skipWaiting(); // Заставляем браузер немедленно активировать новый SW
+    event.waitUntil(
+        caches.open(CACHE_NAME).then((cache) => {
+            console.log('[SW] 🚀 Инициализация щита: кэшируем ядро');
+            return cache.addAll(STATIC_ASSETS);
+        })
+    );
 });
 
-// Перехват запросов: если иконка уже есть в памяти, не качаем её снова
+// 2. АКТИВАЦИЯ: Зачистка старых версий (Мусоросборщик)
+self.addEventListener('activate', (event) => {
+    event.waitUntil(
+        caches.keys().then((keys) => {
+            return Promise.all(
+                keys.filter(key => key !== CACHE_NAME)
+                    .map(key => {
+                        console.log('[SW] 🗑️ Аннигиляция старого кэша:', key);
+                        return caches.delete(key);
+                    })
+            );
+        })
+    );
+});
+
+// 3. ПЕРЕХВАТ ЗАПРОСОВ: Мозг Саркофага
 self.addEventListener('fetch', (event) => {
-  event.respondWith(
-    caches.match(event.request).then((response) => {
-      return response || fetch(event.request);
-    })
-  );
+    const request = event.request;
+
+    // СТРАТЕГИЯ А: Network First (Сначала Сеть, потом Кэш) 
+    // Применяем для навигации (HTML) и наших HTMX запросов (/snippets/)
+    if (request.headers.get('Accept').includes('text/html') || request.url.includes('/snippets/')) {
+        event.respondWith(
+            fetch(request)
+                .then((response) => {
+                    // Если сеть есть, сохраняем свежий ответ в кэш для будущих оффлайн сессий
+                    const clone = response.clone();
+                    caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
+                    return response;
+                })
+                .catch(() => {
+                    console.log('[SW] ⚠️ Сеть недоступна. Поднимаем архивы для:', request.url);
+                    // Если сети нет, ищем в кэше
+                    return caches.match(request).then((cachedResponse) => {
+                        if (cachedResponse) return cachedResponse;
+                        
+                        // Если это был HTMX-запрос, а в кэше пусто, отдаем заглушку
+                        if (request.headers.get('HX-Request')) {
+                            return new Response(
+                                "<div class='col-span-full p-8 border border-red-500/50 bg-red-900/20 rounded-2xl text-center shadow-[0_0_15px_rgba(239,68,68,0.2)]'>" +
+                                "<p class='text-red-500 font-mono font-bold tracking-widest uppercase'>[ SYSTEM OFFLINE ]</p>" +
+                                "<p class='text-xs text-red-400/70 mt-2 font-mono uppercase'>Связь с сервером утеряна. Невозможно извлечь данные.</p>" +
+                                "</div>",
+                                { headers: { 'Content-Type': 'text/html; charset=utf-8' } }
+                            );
+                        }
+                    });
+                })
+        );
+        return;
+    }
+
+    // СТРАТЕГИЯ Б: Cache First (Сначала Кэш, потом Сеть)
+    // Применяем для картинок, CSS, JS, шрифтов
+    event.respondWith(
+        caches.match(request).then((cachedResponse) => {
+            return cachedResponse || fetch(request).then((networkResponse) => {
+                // Динамически кэшируем загруженные картинки (например, из Pillow)
+                if (request.url.includes('/static/')) {
+                    const clone = networkResponse.clone();
+                    caches.open(CACHE_NAME).then(cache => cache.put(request, clone));
+                }
+                return networkResponse;
+            });
+        })
+    );
 });

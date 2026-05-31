@@ -1,71 +1,141 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="ru" class="bg-[#070a13] text-gray-300 antialiased">
 <head>
     {% include 'components/head_meta.html' %} 
     <link rel="stylesheet" href="/static/css/style.css">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        midnight: '#070a13',
+                        electric: '#00f2fe',
+                        acid: '#39ff14',
+                        darkglass: '#0e1726'
+                    },
+                    boxShadow: {
+                        'neon': '0 0 15px rgba(0, 242, 254, 0.15)',
+                        'neon-strong': '0 0 25px rgba(0, 242, 254, 0.4)',
+                        'acid-glow': '0 0 15px rgba(57, 255, 20, 0.2)'
+                    }
+                }
+            }
+        }
+    </script>
 </head>
-<body class="bg-gray-900 text-white min-h-screen font-sans" 
-      x-data="{ role: 'user', openModal: null, hasError: false, showSidebar: false }">
+<body class="min-h-screen relative overflow-x-hidden selection:bg-electric selection:text-midnight font-sans" 
+      x-data="{ 
+          role: 'user', 
+          openModal: null, 
+          hasError: false, 
+          showSidebar: false,
+          isBlurred: false, 
+          timeout: null,
+          showViewModal: false,
+          viewData: {},
+          
+          /* НОВОЕ: Настройки интерфейса */
+          crtEffect: localStorage.getItem('crt_effect') !== 'false',
+
+          resetTimer() {
+              clearTimeout(this.timeout);
+              this.isBlurred = false;
+              this.timeout = setTimeout(() => { this.isBlurred = true; }, 30000);
+          }
+      }"
+      x-init="
+          $watch('crtEffect', val => localStorage.setItem('crt_effect', val));
+          resetTimer();
+      "
+      @mousemove.window="resetTimer()"
+      @keydown.window="resetTimer()"
+      @scroll.window="resetTimer()"
+      @open-arcade.window="hasError = true">
+
+    <div class="fixed inset-0 opacity-[0.03] pointer-events-none z-0 transition-opacity duration-500" 
+         x-show="crtEffect"
+         style="background-image: url('data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E');">
+    </div>
+
+    <template x-if="isBlurred">
+        <div class="fixed inset-0 z-[100] flex items-center justify-center bg-midnight/80 backdrop-blur-sm transition-all duration-500">
+            <div class="border border-electric/50 bg-darkglass/80 p-8 rounded-2xl shadow-neon-strong text-center animate-pulse">
+                <p class="text-electric font-mono text-xl tracking-widest">[ PRIVACY MODE 2.0 ]</p>
+                <p class="text-gray-500 text-xs mt-2 font-mono uppercase tracking-wider">Обнаружено бездействие. Двиньте мышью для дешифровки.</p>
+            </div>
+        </div>
+    </template>
 
     {% include 'components/sidebar.html' %}
 
-    <main class="md:ml-72 transition-all duration-300">
-        <nav class="max-w-7xl mx-auto p-6 flex justify-between items-center">
-    <div class="hidden md:block text-[10px] font-black text-gray-600 uppercase tracking-widest">
-        Рабочая область
-    </div>
+    <main class="md:ml-72 transition-all duration-700 relative z-10"
+          :class="isBlurred ? 'blur-xl select-none pointer-events-none' : ''">
+        
+        <nav class="max-w-7xl mx-auto p-6 flex justify-between items-center bg-darkglass/30 backdrop-blur-sm border-b border-gray-800/50">
+            <div class="hidden md:block text-[10px] font-black text-electric/70 uppercase tracking-widest font-mono shadow-electric">
+                Терминал :: Рабочая область
+            </div>
 
-    <div class="flex items-center gap-4 ml-auto"> 
-        <div id="sync-status" class="flex items-center gap-2">
-             <div class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
-             <span class="text-[10px] text-gray-600 font-bold uppercase tracking-widest">
-                 Синхронизировано
-             </span>
-        </div>
-    </div>
-</nav>
+            <div class="flex items-center gap-4 ml-auto"> 
+                <div id="sync-status" class="flex items-center gap-2 bg-acid/10 px-3 py-1.5 rounded-lg border border-acid/20 shadow-acid-glow">
+                    <div class="w-1.5 h-1.5 rounded-full bg-acid animate-pulse"></div>
+                    <span class="text-[10px] text-acid font-bold uppercase tracking-widest font-mono">
+                        Синхронизировано
+                    </span>
+                </div>
+            </div>
+        </nav>
 
-        <div class="container mx-auto px-4 py-6">
-            <div class="max-w-2xl mb-10">
+        <div class="container mx-auto px-4 py-8">
+            <div class="max-w-3xl mb-12">
                 <div class="relative group">
-                    <input type="text" name="q" placeholder="Поиск по зашифрованным мыслям..." 
-                           class="w-full bg-gray-800/40 border border-gray-700/50 rounded-2xl py-4 px-12 text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all backdrop-blur-md shadow-lg"
+                    <div class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
+                        <span class="text-electric font-mono font-bold">_></span>
+                    </div>
+                    <input type="text" name="q" placeholder="Omni-Search: #tag, lang:python, или текст..." 
+                           class="w-full bg-darkglass/60 border border-electric/20 rounded-2xl py-4 pl-14 pr-12 text-sm text-gray-200 focus:outline-none focus:border-electric focus:ring-1 focus:ring-electric transition-all backdrop-blur-md shadow-neon font-mono placeholder-gray-600"
                            hx-get="/snippets/list" hx-trigger="keyup changed delay:300ms" hx-target="#snippets-list" hx-indicator="#search-spinner">
-                    <svg class="absolute left-4 top-4 w-5 h-5 text-gray-600 group-focus-within:text-blue-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-                    </svg>
-                    <div id="search-spinner" class="htmx-indicator absolute right-4 top-4">
-                        <div class="animate-spin h-5 w-5 border-2 border-blue-500 border-t-transparent rounded-full"></div>
+                    
+                    <div id="search-spinner" class="htmx-indicator absolute right-5 top-4">
+                        <div class="animate-spin h-5 w-5 border-2 border-electric border-t-transparent rounded-full shadow-neon"></div>
                     </div>
                 </div>
             </div>
 
             {% include 'components/categories.html' %}
 
-            <div id="snippets-list" class="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 items-start" 
+            <div id="snippets-list" class="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 items-start" 
                  hx-get="/snippets/list" hx-trigger="load">
-            </div>
+                </div>
         </div>
     </main>
 
     {% include 'components/mobile_nav.html' %}
     {% include 'components/modal.html' %}
-    
+    {% include 'components/view_modal.html' %} 
     <button @click="openModal = 'idea'; $nextTick(() => document.querySelector('form').reset())" 
-            class="fixed bottom-24 right-6 md:bottom-12 md:right-12 z-50 w-16 h-16 bg-blue-600 text-white rounded-full shadow-2xl flex items-center justify-center hover:scale-110 active:scale-90 transition-all border-4 border-gray-900 md:border-none">
-        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            class="fixed bottom-24 right-6 md:bottom-12 md:right-12 z-50 w-16 h-16 bg-electric/10 text-electric rounded-full shadow-neon-strong flex items-center justify-center hover:scale-110 active:scale-95 transition-all border border-electric backdrop-blur-md group">
+        <svg class="w-8 h-8 group-hover:drop-shadow-[0_0_8px_rgba(0,242,254,1)] transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path d="M12 4v16m8-8H4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
     </button>
 
     {% include 'components/error_game.html' %}
     <script src="/static/js/game.js"></script>
+    
     <script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/static/js/sw.js')
-        .then(reg => console.log('🚀 Service Worker готов!', reg))
-        .catch(err => console.error('❌ Ошибка SW:', err));
-    });
-  }
-</script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/static/js/sw.js')
+                    .then(reg => console.log('🚀 Service Worker готов!', reg))
+                    .catch(err => console.error('❌ Ошибка SW:', err));
+            });
+        }
+    </script>
 </body>
 </html>

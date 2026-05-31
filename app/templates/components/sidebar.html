@@ -3,59 +3,82 @@
      x-transition:enter="transition opacity ease-out duration-300"
      x-transition:enter-start="opacity-0"
      x-transition:enter-end="opacity-100"
-     class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60] md:hidden" x-cloak>
+     class="fixed inset-0 bg-midnight/80 backdrop-blur-sm z-[60] md:hidden" x-cloak>
 </div>
 
 <aside :class="showSidebar ? 'translate-x-0' : '-translate-x-full md:translate-x-0'"
-       class="fixed top-0 left-0 h-full w-72 bg-gray-900 border-r border-gray-800 z-[70] transition-transform duration-300 ease-in-out flex flex-col shadow-2xl">
+       class="fixed top-0 left-0 h-full w-72 bg-darkglass/95 backdrop-blur-xl border-r border-electric/20 z-[70] transition-transform duration-300 ease-in-out flex flex-col shadow-neon-strong">
     
-    <div class="p-6 border-b border-gray-800 flex justify-between items-center">
-        <div class="text-xl font-black bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-emerald-400 uppercase tracking-tighter">QS PRO</div>
-        <button @click="showSidebar = false" class="md:hidden text-gray-500 text-2xl">&times;</button>
+    <div class="absolute inset-0 opacity-[0.02] pointer-events-none z-0" 
+         style="background-image: url('data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E');">
     </div>
 
-    <div class="flex-grow p-6 space-y-8 overflow-y-auto custom-scrollbar">
+    <div class="p-6 border-b border-gray-800/60 flex justify-between items-center relative z-10">
+        <div class="text-2xl font-black text-electric uppercase tracking-widest shadow-electric">
+            QS<span class="text-acid">_PRO</span>
+        </div>
+        <button @click="showSidebar = false" class="md:hidden text-gray-500 hover:text-electric text-4xl transition-colors">&times;</button>
+    </div>
+
+    <div class="flex-grow p-6 space-y-8 overflow-y-auto custom-scrollbar relative z-10">
+        
         <div>
-            <p class="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-4">Режим работы</p>
-            <div class="grid grid-cols-2 bg-gray-800/50 p-1 rounded-xl border border-gray-700/50">
-                <button @click="role = 'user'" :class="role === 'user' ? 'bg-blue-600 text-white' : 'text-gray-500'" class="py-2 rounded-lg text-[10px] font-bold transition-all uppercase">User</button>
-                <button @click="role = 'dev'" :class="role === 'dev' ? 'bg-emerald-600 text-white' : 'text-gray-500'" class="py-2 rounded-lg text-[10px] font-bold transition-all uppercase">Dev</button>
+            <p class="text-xs font-mono font-bold text-gray-500 uppercase tracking-widest mb-4">Режим терминала</p>
+            <div class="grid grid-cols-2 bg-midnight/60 p-1.5 rounded-xl border border-gray-800">
+                <button @click="role = 'user'" :class="role === 'user' ? 'bg-electric text-midnight shadow-[0_0_10px_rgba(0,242,254,0.4)]' : 'text-gray-500 hover:text-gray-300'" class="py-2.5 rounded-lg text-xs font-mono font-bold transition-all uppercase tracking-widest">User</button>
+                <button @click="role = 'dev'" :class="role === 'dev' ? 'bg-acid text-midnight shadow-[0_0_10px_rgba(57,255,20,0.4)]' : 'text-gray-500 hover:text-gray-300'" class="py-2.5 rounded-lg text-xs font-mono font-bold transition-all uppercase tracking-widest">Dev</button>
             </div>
         </div>
 
-        <div class="space-y-3">
-            <p class="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-4">Система</p>
+        <div class="space-y-4">
+            <p class="text-xs font-mono font-bold text-gray-500 uppercase tracking-widest mb-4">Система</p>
             
-            <button class="w-full flex items-center gap-3 p-3 rounded-xl bg-gray-800/30 border border-gray-700/50 hover:bg-gray-800 transition-all text-xs text-gray-300 text-left">
-                <span>🔑</span> Сменить ключ
+            <button @click="openModal = 'change_key'" 
+                    class="w-full flex items-center gap-4 p-4 rounded-xl bg-midnight/60 border border-gray-800 hover:border-electric/50 hover:shadow-neon transition-all text-sm font-mono text-gray-300 text-left group cursor-pointer z-20 relative">
+                <span class="text-xl group-hover:scale-110 transition-transform">🔑</span> 
+                <span class="group-hover:text-electric transition-colors">Сменить ключ</span>
             </button>
             
-            <button class="w-full flex items-center gap-3 p-3 rounded-xl bg-gray-800/30 border border-gray-700/50 hover:bg-gray-800 transition-all text-xs text-gray-300 text-left">
-                <span>🎨</span> Тема оформления
+            <button @click="openModal = 'settings'" 
+                    class="w-full flex items-center gap-4 p-4 rounded-xl bg-midnight/60 border border-gray-800 hover:border-electric/50 hover:shadow-neon transition-all text-sm font-mono text-gray-300 text-left group cursor-pointer z-20 relative">
+                <span class="text-xl group-hover:scale-110 transition-transform">🎨</span> 
+                <span class="group-hover:text-electric transition-colors">Интерфейс</span>
             </button>
 
-            <a href="/snippets/export" download="qs_pro_backup.json" 
-               class="w-full flex items-center gap-3 p-3 rounded-xl bg-gray-800/30 border border-gray-700/50 hover:bg-blue-600/20 hover:border-blue-500/30 transition-all text-xs text-gray-300 text-left">
-                <span>📥</span> Экспорт JSON
-            </a>
+            <button onclick="window.triggerGame()" 
+                    class="w-full flex items-center gap-4 p-4 rounded-xl bg-midnight/60 border border-gray-800 hover:border-acid/50 hover:shadow-[0_0_15px_rgba(57,255,20,0.2)] transition-all text-sm font-mono text-gray-300 text-left group cursor-pointer z-20 relative">
+                <span class="text-xl group-hover:scale-110 transition-transform">🕹️</span> 
+                <span class="group-hover:text-acid transition-colors">Крипто-Прыжок</span>
+            </button>
+
+            <button hx-get="/snippets/export" 
+                    class="w-full flex items-center gap-4 p-4 rounded-xl bg-midnight/60 border border-gray-800 hover:bg-electric/10 hover:border-electric hover:shadow-neon transition-all text-sm font-mono text-gray-300 text-left group cursor-pointer z-20 relative"
+                    onclick="window.location.href='/snippets/export'">
+                <span class="text-xl group-hover:scale-110 transition-transform text-electric">📥</span> 
+                <span class="group-hover:text-electric transition-colors font-bold">Экспорт Архива</span>
+            </button>
         </div>
     </div>
 
-    <div class="p-6 border-t border-gray-800 bg-gray-900/50 backdrop-blur-md">
+    <div class="p-6 border-t border-gray-800/60 bg-midnight/80 backdrop-blur-md relative z-10">
         <div class="flex items-center justify-between group">
-            <div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-emerald-500 flex items-center justify-center text-[10px] font-black text-white shadow-lg shadow-blue-500/20">
+            <div class="flex items-center gap-4">
+                <div class="w-11 h-11 rounded-xl bg-electric/10 border border-electric flex items-center justify-center text-base font-mono font-black text-electric shadow-neon">
                     {{ user.username[0].upper() if user else '?' }}
                 </div>
                 <div class="flex flex-col">
-                    <span class="text-sm font-bold text-gray-200 truncate max-w-[100px]">{{ user.username if user else 'Guest' }}</span>
-                    <span class="text-[9px] text-emerald-500 font-bold uppercase tracking-tighter">Online</span>
+                    <span class="text-base font-mono font-bold text-gray-200 truncate max-w-[110px]">{{ user.username if user else 'Guest' }}</span>
+                    <span class="text-[10px] text-acid font-mono font-bold uppercase tracking-widest shadow-acid-glow flex items-center gap-1.5 mt-1">
+                        <span class="w-1.5 h-1.5 rounded-full bg-acid animate-pulse"></span>
+                        В Сети
+                    </span>
                 </div>
             </div>
+            
             <button hx-post="/auth/logout" 
                     hx-target="body"
-                    class="p-2 text-gray-500 hover:text-red-400 transition-colors" title="Выйти">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    class="p-2 text-gray-500 hover:text-red-500 transition-all hover:drop-shadow-[0_0_10px_rgba(239,68,68,0.8)] cursor-pointer z-20 relative" title="Отключение">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                 </svg>
             </button>

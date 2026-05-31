@@ -1,13 +1,21 @@
-<div x-show="hasError" x-cloak class="fixed inset-0 z-[100] bg-gray-900 flex flex-col items-center justify-center p-4 text-center">
-    <div class="mb-8">
-        <h1 class="text-4xl font-black text-red-500 mb-2 uppercase">Сервер прилег отдохнуть</h1>
-        <p class="text-gray-400">Пока мы чиним, помоги кубику не упасть!</p>
-        <p class="text-[10px] text-gray-600 mt-2 uppercase font-bold tracking-[0.2em]">Пробел или клик — Прыжок</p>
+<div x-show="hasError" 
+     x-cloak
+     x-transition.opacity.duration.300ms
+     class="fixed inset-0 z-[200] bg-midnight/95 backdrop-blur-xl flex flex-col items-center justify-center p-4">
+    
+    <div class="text-center mb-4 md:mb-6">
+        <h2 class="text-2xl md:text-3xl font-black text-electric tracking-widest uppercase shadow-electric mb-2">Крипто-Прыжок</h2>
+        <p class="text-acid font-mono text-[10px] md:text-xs uppercase tracking-widest animate-pulse">Нажми ПРОБЕЛ или тапни по экрану</p>
     </div>
-    
-    <canvas id="gameCanvas" width="320" height="400" class="bg-gray-800 rounded-3xl border-4 border-gray-700 shadow-2xl"></canvas>
-    
-    <button onclick="location.reload()" class="mt-8 px-10 py-4 bg-white text-black font-bold rounded-2xl hover:scale-105 transition-all">
-        ОБНОВИТЬ СТРАНИЦУ
+
+    <div class="relative flex-shrink-0">
+        <canvas id="gameCanvas" width="400" height="600" 
+                class="border border-gray-800 rounded-3xl shadow-neon-strong bg-darkglass max-w-full h-auto max-h-[60vh] object-contain">
+        </canvas>
+    </div>
+
+    <button @click="hasError = false" 
+            class="mt-6 md:mt-8 px-6 py-3 border border-red-500/50 text-red-500 hover:text-red-400 font-mono font-bold text-sm rounded-xl hover:bg-red-500/10 hover:shadow-[0_0_15px_rgba(239,68,68,0.2)] transition-all uppercase tracking-widest cursor-pointer active:scale-95">
+        Закрыть терминал
     </button>
 </div>

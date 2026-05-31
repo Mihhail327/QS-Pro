@@ -1,19 +1,23 @@
-<div class="flex flex-wrap gap-4 mb-10 overflow-x-auto pb-2 custom-scrollbar">
+<div class="flex flex-wrap gap-4 mb-10 overflow-x-auto pb-4 custom-scrollbar">
     <template x-for="cat in [
-        {id: 'all', emoji: '🧠', title: 'Все', color: 'hover:border-white'},
-        {id: 'idea', emoji: '💡', title: 'Идеи', color: 'hover:border-blue-500'},
-        {id: 'code', emoji: '💻', title: 'Код', color: 'hover:border-emerald-500', dev: true},
-        {id: 'study', emoji: '🎓', title: 'Учеба', color: 'hover:border-orange-500'},
-        {id: 'important', emoji: '📌', title: 'Важное', color: 'hover:border-red-500'}
+        {id: 'all', emoji: '🧠', title: 'Все', border: 'hover:border-gray-300 hover:shadow-[0_0_15px_rgba(209,213,219,0.15)]', text: 'group-hover:text-gray-300'},
+        {id: 'idea', emoji: '💡', title: 'Идеи', border: 'hover:border-electric/70 hover:shadow-neon', text: 'group-hover:text-electric'},
+        {id: 'code', emoji: '💻', title: 'Код', border: 'hover:border-electric/70 hover:shadow-neon', text: 'group-hover:text-electric', dev: true},
+        {id: 'study', emoji: '🎓', title: 'Учеба', border: 'hover:border-acid/70 hover:shadow-[0_0_15px_rgba(57,255,20,0.15)]', text: 'group-hover:text-acid'},
+        {id: 'important', emoji: '📌', title: 'Важное', border: 'hover:border-yellow-500/70 hover:shadow-[0_0_15px_rgba(234,179,8,0.15)]', text: 'group-hover:text-yellow-500'}
     ]">
         <div x-show="!cat.dev || role === 'dev'" 
              hx-get="/snippets/list"
              :hx-vals="`js:{category: '${cat.id}'}`"
              hx-target="#snippets-list"
-             :class="cat.color"
-             class="flex-1 min-w-[110px] max-w-[160px] bg-gray-800/40 p-4 rounded-2xl border border-gray-700 transition-all cursor-pointer group text-center active:scale-95 shadow-lg backdrop-blur-md">
-            <div class="text-2xl mb-1 group-hover:scale-110 transition duration-300" x-text="cat.emoji"></div>
-            <h3 class="text-[10px] font-black uppercase tracking-widest text-gray-500 group-hover:text-white transition-colors" x-text="cat.title"></h3>
+             :class="cat.border"
+             class="flex-1 min-w-[130px] max-w-[180px] bg-darkglass/60 p-5 rounded-2xl border border-gray-800 transition-all duration-300 cursor-pointer group text-center active:scale-95 backdrop-blur-md flex flex-col justify-center items-center">
+            
+            <div class="text-3xl mb-3 group-hover:scale-110 group-hover:-translate-y-1 transition-all duration-300 drop-shadow-lg" x-text="cat.emoji"></div>
+            
+            <h3 class="text-xs md:text-sm font-mono font-bold uppercase tracking-widest text-gray-500 transition-colors duration-300" 
+                :class="cat.text"
+                x-text="cat.title"></h3>
         </div>
     </template>
 </div>

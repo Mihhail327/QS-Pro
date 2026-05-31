@@ -1,86 +1,77 @@
-<div x-show="openModal" 
+<div x-show="['idea', 'code', 'study', 'important'].includes(openModal)" 
      x-cloak
-     x-effect="if(openModal) $nextTick(() => $el.querySelector('textarea').focus())"
-     x-transition:enter="transition ease-out duration-300"
-     x-transition:enter-start="opacity-0"
-     x-transition:enter-end="opacity-100"
-     class="fixed inset-0 z-50 flex items-end md:items-center justify-center p-0 md:p-4 bg-black/80 backdrop-blur-md">
+     class="fixed inset-0 z-[100] flex items-end md:items-center justify-center p-0 md:p-4 bg-midnight/90 backdrop-blur-md">
     
     <div @click.away="openModal = null" 
-         x-transition:enter="transition ease-out duration-300"
-         x-transition:enter-start="translate-y-full md:translate-y-10 md:opacity-0"
-         x-transition:enter-end="translate-y-0 md:opacity-100"
-         class="bg-gray-900 w-full md:max-w-lg rounded-t-3xl md:rounded-3xl p-8 border-t md:border border-gray-800 shadow-2xl transition-all max-h-[90vh] overflow-y-auto custom-scrollbar">
+         class="bg-darkglass/95 w-full md:max-w-2xl rounded-t-3xl md:rounded-3xl p-8 border-t md:border border-electric/30 shadow-neon-strong transition-all max-h-[90vh] relative flex flex-col overflow-hidden">
         
-        <div class="flex justify-between items-center mb-6">
-            <div>
-                <h3 class="text-xl font-bold text-white tracking-tight" 
-                    x-text="{
-                        'idea': 'Новая идея 💡', 
-                        'code': 'Сниппет кода 💻', 
-                        'study': 'Учебная заметка 🎓', 
-                        'important': 'Важное событие 📌'
-                    }[openModal] || 'Заметка 📝'"></h3>
-                <p class="text-[10px] text-gray-500 uppercase tracking-[0.2em] mt-1 font-black">Шифрование AES-256</p>
-            </div>
-            <button @click="openModal = null" class="text-gray-500 hover:text-white text-3xl transition-colors">&times;</button>
+        <div class="flex justify-between items-center mb-8 border-b border-gray-800/60 pb-4 flex-shrink-0">
+            <h3 class="text-xl font-bold tracking-widest text-electric uppercase" 
+                x-text="{ 'idea': 'Новая идея', 'code': 'Сниппет кода', 'study': 'Учебная заметка', 'important': 'Важный сигнал' }[openModal]"></h3>
+            <button @click="openModal = null" class="text-gray-500 hover:text-red-500 text-3xl font-mono">&times;</button>
         </div>
 
-        <form hx-post="/snippets/create" 
-              hx-target="#snippets-list" 
-              hx-swap="innerHTML" 
-              @htmx:after-request="if(event.detail.successful) { openModal = null; $el.reset(); }">
-            
-            <input type="hidden" name="category" :value="openModal">
-
-            <div class="grid grid-cols-2 gap-2 mb-6">
-                <template x-for="c in [
-                    {id: 'idea', label: 'Идея'}, 
-                    {id: 'code', label: 'Код'}, 
-                    {id: 'study', label: 'Учеба'}, 
-                    {id: 'important', label: 'Важно'}
-                ]">
-                    <label class="cursor-pointer">
-                        <input type="radio" :value="c.id" x-model="openModal" class="hidden peer">
-                        <div class="text-center p-2.5 rounded-xl border border-gray-800 bg-gray-800/30 text-[10px] font-black peer-checked:bg-blue-600 peer-checked:border-blue-500 peer-checked:text-white text-gray-500 transition-all uppercase tracking-widest" 
-                             x-text="c.label"></div>
-                    </label>
-                </template>
-            </div>
-
-            <div class="space-y-4">
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="text-[9px] uppercase font-black text-gray-600 ml-1 mb-1 block">Подраздел</label>
-                        <input type="text" name="sub_category" placeholder="Напр. Python" 
-                               class="w-full bg-gray-950 border border-gray-800 rounded-xl py-3 px-4 text-white text-xs focus:ring-1 focus:ring-blue-500 outline-none transition-all">
-                    </div>
-                    <div>
-                        <label class="text-[9px] uppercase font-black text-gray-600 ml-1 mb-1 block">Теги</label>
-                        <input type="text" name="tags" placeholder="work hack" 
-                               class="w-full bg-gray-950 border border-gray-800 rounded-xl py-3 px-4 text-white text-xs focus:ring-1 focus:ring-blue-500 outline-none transition-all">
-                    </div>
-                </div>
-
-                <div>
-                    <label class="text-[9px] uppercase font-black text-gray-600 ml-1 mb-1 block">Контент</label>
-                    <textarea name="content" required 
-                              class="w-full bg-gray-950 border border-gray-800 rounded-2xl p-5 text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all placeholder:text-gray-700 custom-scrollbar text-sm leading-relaxed" 
-                              rows="4" 
-                              placeholder="Твои мысли под надежным замком..."></textarea>
-                </div>
-
-                <div>
-                    <label class="text-[9px] uppercase font-black text-gray-600 ml-1 mb-1 block">Аннотация (Личная заметка)</label>
-                    <input type="text" name="note" placeholder="Краткое описание для контекста..." 
-                           class="w-full bg-gray-950 border border-gray-800 rounded-xl py-3 px-4 text-white text-xs focus:ring-1 focus:ring-blue-500 outline-none transition-all">
-                </div>
+        <div class="overflow-y-auto custom-scrollbar flex-grow pr-2">
+            <form hx-post="/snippets/create" hx-encoding="multipart/form-data" hx-target="#snippets-list" hx-swap="innerHTML" 
+                  @htmx:after-request="if(event.detail.successful) { openModal = null; $el.reset(); }">
                 
-                <button type="submit" 
-                        class="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 text-white font-black py-5 rounded-2xl shadow-lg transition-all active:scale-[0.98] uppercase tracking-widest text-xs">
-                    Зашифровать и сохранить
-                </button>
-            </div>
+                <input type="hidden" name="category" :value="openModal">
+                
+                <div class="grid grid-cols-4 gap-3 mb-6">
+                    <template x-for="c in [{id: 'idea', label: 'Идея'}, {id: 'code', label: 'Код'}, {id: 'study', label: 'Учеба'}, {id: 'important', label: 'Важно'}]">
+                        <label class="cursor-pointer">
+                            <input type="radio" :value="c.id" x-model="openModal" class="hidden peer">
+                            <div class="text-center p-3 rounded-xl border border-gray-800 bg-midnight/50 text-[10px] font-bold peer-checked:bg-electric/20 peer-checked:border-electric peer-checked:text-electric text-gray-500 uppercase tracking-widest" x-text="c.label"></div>
+                        </label>
+                    </template>
+                </div>
+
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mb-5">
+                    <input type="text" name="sub_category" placeholder="Подраздел" class="bg-midnight/80 border border-gray-800 rounded-xl py-3 px-4 text-xs font-mono text-gray-200 outline-none focus:border-electric w-full">
+                    <input type="text" name="tags" placeholder="Теги" class="bg-midnight/80 border border-gray-800 rounded-xl py-3 px-4 text-xs font-mono text-gray-200 outline-none focus:border-electric w-full">
+                    <input type="number" name="parent_snippet_id" placeholder="Nexus Link ID" class="col-span-2 md:col-span-1 bg-electric/5 border border-electric/20 rounded-xl py-3 px-4 text-xs font-mono text-electric outline-none focus:border-electric w-full">
+                </div>
+
+                <textarea name="content" required class="w-full bg-midnight/80 border border-gray-800 rounded-2xl p-5 text-gray-200 font-mono focus:border-electric outline-none min-h-[120px]" placeholder="Ввод данных..."></textarea>
+                <input type="text" name="note" placeholder="Аннотация..." class="w-full bg-midnight/80 border border-gray-800 rounded-xl py-3 px-4 mt-5 text-gray-200 text-xs font-mono focus:border-electric outline-none">
+
+                <div x-show="openModal === 'study'" x-collapse class="mt-4">
+                    <label class="flex items-center gap-4 p-4 bg-acid/5 border border-acid/20 rounded-xl cursor-pointer hover:border-acid/50 transition-all">
+                        <input type="file" name="image" accept="image/*" class="hidden" @change="$refs.fileName.textContent = $event.target.files[0] ? $event.target.files[0].name : 'Файл не выбран'">
+                        <div class="bg-acid/10 text-acid p-2 rounded-lg"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg></div>
+                        <div class="flex flex-col"><span class="text-xs text-acid font-bold uppercase">Скриншот</span><span x-ref="fileName" class="text-[10px] text-gray-500">Файл не выбран</span></div>
+                    </label>
+                </div>
+
+                <div x-show="openModal === 'important'" x-collapse class="mt-4 p-4 bg-yellow-500/5 border border-yellow-500/20 rounded-xl">
+                    <input type="datetime-local" name="reminder_at" class="w-full bg-midnight border border-yellow-500/30 rounded-xl py-2 px-3 text-xs font-mono text-yellow-500">
+                </div>
+
+                <button type="submit" class="w-full bg-electric/10 border border-electric text-electric mt-6 py-4 rounded-xl font-bold uppercase tracking-widest text-xs hover:shadow-neon-strong">Инициализировать запечатку</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div x-show="openModal === 'settings'" x-cloak class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-midnight/90 backdrop-blur-md">
+    <div @click.away="openModal = null" class="bg-darkglass border border-electric/40 rounded-3xl w-full max-w-md p-8 shadow-neon-strong">
+        <h2 class="text-2xl font-black text-electric uppercase mb-6">Интерфейс</h2>
+        <label class="flex items-center justify-between p-4 bg-midnight/50 border border-gray-800 rounded-xl cursor-pointer">
+            <p class="text-electric font-bold">CRT-Эффект</p>
+            <input type="checkbox" x-model="crtEffect" class="w-5 h-5 accent-electric">
+        </label>
+        <button @click="openModal = null" class="w-full mt-6 text-gray-500 hover:text-red-500 uppercase text-xs">Закрыть</button>
+    </div>
+</div>
+
+<div x-show="openModal === 'change_key'" x-cloak class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-midnight/90 backdrop-blur-md">
+    <div @click.away="openModal = null" class="bg-darkglass border border-red-500/40 rounded-3xl w-full max-w-md p-8 shadow-[0_0_25px_rgba(239,68,68,0.15)]">
+        <h2 class="text-2xl font-black text-red-500 uppercase mb-6">Смена Ключа</h2>
+        <form hx-post="/auth/change-password" hx-target="#key-msg" class="space-y-4">
+            <input type="password" name="old_password" placeholder="Текущий ключ" required class="w-full bg-midnight border border-gray-800 rounded-xl p-3 text-sm font-mono">
+            <input type="password" name="new_password" placeholder="Новый ключ" required class="w-full bg-midnight border border-gray-800 rounded-xl p-3 text-sm font-mono">
+            <div id="key-msg"></div>
+            <button type="submit" class="w-full bg-red-500/10 border border-red-500 text-red-500 py-3 rounded-xl font-bold uppercase">Перезаписать</button>
         </form>
     </div>
 </div>
