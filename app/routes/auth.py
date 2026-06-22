@@ -90,8 +90,10 @@ async def login(
     )
     
     # 2. Вешаем куки
+    import os
+    is_production = os.getenv("ENV", "").lower().startswith("prod") or os.getenv("ENVIRONMENT", "").lower().startswith("prod")
     final_response.set_cookie(
-        key="access_token", value=token, httponly=True, samesite="lax", secure=False 
+        key="access_token", value=token, httponly=True, samesite="lax", secure=is_production
     )
     
     # 3. Жестко приказываем HTMX сделать редирект

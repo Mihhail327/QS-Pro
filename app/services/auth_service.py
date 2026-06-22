@@ -10,6 +10,7 @@ from securitycore.analysis.password_analyzer import password_analyzer
 
 async def register_user(username: str, password: str, is_dev: bool, session: AsyncSession) -> Tuple[bool, str]:
     """Регистрация юзера с проверкой энтропии SecurityCore."""
+    username = username.strip().lower()
     if len(username) < 3 or len(username) > 20:
         return False, "Имя должно быть от 3 до 20 символов"
 
@@ -52,6 +53,7 @@ async def register_user(username: str, password: str, is_dev: bool, session: Asy
 
 async def authenticate_user(username: str, password: str, session: AsyncSession) -> Tuple[Optional[User], Optional[str]]:
     """Поиск юзера и проверка Argon2id хэша."""
+    username = username.strip().lower()
     if not username or not password:
         return None, "Заполните все поля терминала"
 

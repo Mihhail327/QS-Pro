@@ -114,19 +114,25 @@ async def export_snippets(request: Request, session: AsyncSession = Depends(get_
     if not user or user.id is None:
         return Response(status_code=404)
 
-    snippets = await get_user_snippets(session, user.id, "all")
-    
-    export_data = [{
-        "title": s.title, 
-        "category": s.category, 
-        "sub_category": s.sub_category,
-        "content": decrypt_data(s.content, user.encryption_salt, s.category) or "",
-        "note": decrypt_data(s.note, user.encryption_salt, s.category) if s.note else "",
-        "tags": s.tags, 
-        "version": s.version, 
-        "created_at": s.created_at.isoformat(),
-        "image_url": s.image_url  # На всякий случай добавил в экспорт
-    } for s in snippets]
+    import os
+    export_data = {
+        "shield_metadata": {
+            "entropy_noise": os.urandom(64).hex(),
+            "anti_ai_signature": os.urandom(32).hex()
+        },
+        "records": [{
+            "title": s.title, 
+            "category": s.category, 
+            "sub_category": s.sub_category,
+            "content": decrypt_data(s.content, user.encryption_salt, s.category) or "",
+            "note": decrypt_data(s.note, user.encryption_salt, s.category) if s.note else "",
+            "tags": s.tags, 
+            "version": s.version, 
+            "created_at": s.created_at.isoformat(),
+            "image_url": s.image_url,
+            "_entropy_pad": os.urandom(16).hex()
+        } for s in snippets]
+    }
 
     buffer = io.BytesIO(json.dumps(export_data, indent=4, ensure_ascii=False).encode("utf-8"))
     return StreamingResponse(

@@ -51,3 +51,8 @@ async def on_startup():
     ===================================================
     """)
     await create_db_and_tables()
+    
+    # Запуск фонового демона для напоминалок
+    import asyncio
+    from app.core.reminders import start_reminder_daemon
+    asyncio.create_task(start_reminder_daemon())
