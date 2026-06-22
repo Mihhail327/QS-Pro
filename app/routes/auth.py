@@ -1,7 +1,7 @@
 import json
 from fastapi import APIRouter, Depends, Request, Response, Form
 from fastapi.templating import Jinja2Templates
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, RedirectResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
 # Инфраструктура
@@ -14,6 +14,11 @@ from securitycore import hash_password, verify_password
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 templates = Jinja2Templates(directory="app/templates")
+
+@router.get("", response_class=HTMLResponse)
+@router.get("/", response_class=HTMLResponse)
+async def auth_root():
+    return RedirectResponse(url="/auth/login")
 
 @router.post("/register")
 async def register(
@@ -132,6 +137,6 @@ async def logout():
     response.delete_cookie("access_token")
     
     # Приказываем HTMX перенаправить пользователя на главную
-    response.headers["HX-Redirect"] = "/"
+    response.headers["HX-Redirect"] = "/auth"
     
     return response
