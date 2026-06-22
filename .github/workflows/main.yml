@@ -17,15 +17,15 @@ jobs:
         with:
           python-version: "3.13"
 
+      - name: Install Poetry
+        run: |
+          pip install poetry
+
       - name: Install dependencies
         run: |
-          pip install --upgrade pip
-          pip install -r requirements.txt
-
-      - name: Compile check (Syntax integrity)
-        run: python -m compileall app
+          poetry config virtualenvs.create false
+          poetry install --no-root
 
       - name: Security check (Bandit)
         run: |
-          pip install bandit
-          bandit -r app -ll
+          poetry run bandit -r app -ll
