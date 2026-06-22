@@ -37,8 +37,13 @@
           showViewModal: false,
           viewData: {},
           
-          /* НОВОЕ: Настройки интерфейса */
+          /* Настройки интерфейса */
           crtEffect: localStorage.getItem('crt_effect') !== 'false',
+          lang: localStorage.getItem('lang') || 'ru',
+
+          t(key) {
+              return (window.TRANSLATIONS && TRANSLATIONS[this.lang] && TRANSLATIONS[this.lang][key]) || key;
+          },
 
           resetTimer() {
               clearTimeout(this.timeout);
@@ -48,6 +53,7 @@
       }"
       x-init="
           $watch('crtEffect', val => localStorage.setItem('crt_effect', val));
+          $watch('lang', val => localStorage.setItem('lang', val));
           resetTimer();
       "
       @mousemove.window="resetTimer()"
@@ -63,8 +69,8 @@
     <template x-if="isBlurred">
         <div class="fixed inset-0 z-[100] flex items-center justify-center bg-midnight/80 backdrop-blur-sm transition-all duration-500">
             <div class="border border-electric/50 bg-darkglass/80 p-8 rounded-2xl shadow-neon-strong text-center animate-pulse">
-                <p class="text-electric font-mono text-xl tracking-widest">[ PRIVACY MODE 2.0 ]</p>
-                <p class="text-gray-500 text-xs mt-2 font-mono uppercase tracking-wider">Обнаружено бездействие. Двиньте мышью для дешифровки.</p>
+                <p class="text-electric font-mono text-xl tracking-widest" x-text="t('privacy_title')">[ PRIVACY MODE 2.0 ]</p>
+                <p class="text-gray-500 text-xs mt-2 font-mono uppercase tracking-wider" x-text="t('privacy_desc')">Обнаружено бездействие. Двиньте мышью для дешифровки.</p>
             </div>
         </div>
     </template>
@@ -75,14 +81,14 @@
           :class="isBlurred ? 'blur-xl select-none pointer-events-none' : ''">
         
         <nav class="max-w-7xl mx-auto p-6 flex justify-between items-center bg-darkglass/30 backdrop-blur-sm border-b border-gray-800/50">
-            <div class="hidden md:block text-[10px] font-black text-electric/70 uppercase tracking-widest font-mono shadow-electric">
+            <div class="hidden md:block text-[10px] font-black text-electric/70 uppercase tracking-widest font-mono shadow-electric" x-text="t('terminal_title')">
                 Терминал :: Рабочая область
             </div>
 
             <div class="flex items-center gap-4 ml-auto"> 
                 <div id="sync-status" class="flex items-center gap-2 bg-acid/10 px-3 py-1.5 rounded-lg border border-acid/20 shadow-acid-glow">
                     <div class="w-1.5 h-1.5 rounded-full bg-acid animate-pulse"></div>
-                    <span class="text-[10px] text-acid font-bold uppercase tracking-widest font-mono">
+                    <span class="text-[10px] text-acid font-bold uppercase tracking-widest font-mono" x-text="t('synchronized')">
                         Синхронизировано
                     </span>
                 </div>
@@ -96,6 +102,7 @@
                         <span class="text-electric font-mono font-bold">_></span>
                     </div>
                     <input type="text" name="q" placeholder="Omni-Search: #tag, lang:python, или текст..." 
+                           :placeholder="t('omni_search_placeholder')"
                            class="w-full bg-darkglass/60 border border-electric/20 rounded-2xl py-4 pl-14 pr-12 text-sm text-gray-200 focus:outline-none focus:border-electric focus:ring-1 focus:ring-electric transition-all backdrop-blur-md shadow-neon font-mono placeholder-gray-600"
                            hx-get="/snippets/list" hx-trigger="keyup changed delay:300ms" hx-target="#snippets-list" hx-indicator="#search-spinner">
                     

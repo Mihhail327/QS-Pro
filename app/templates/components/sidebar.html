@@ -23,45 +23,54 @@
     <div class="flex-grow p-6 space-y-8 overflow-y-auto custom-scrollbar relative z-10">
         
         <div>
-            <p class="text-xs font-mono font-bold text-gray-500 uppercase tracking-widest mb-4">Режим терминала</p>
+            <p class="text-xs font-mono font-bold text-gray-500 uppercase tracking-widest mb-4" x-text="t('terminal_mode')">Режим терминала</p>
             <div class="grid grid-cols-2 bg-midnight/60 p-1.5 rounded-xl border border-gray-800">
                 <button @click="role = 'user'" :class="role === 'user' ? 'bg-electric text-midnight shadow-[0_0_10px_rgba(0,242,254,0.4)]' : 'text-gray-500 hover:text-gray-300'" class="py-2.5 rounded-lg text-xs font-mono font-bold transition-all uppercase tracking-widest">User</button>
                 <button @click="role = 'dev'" :class="role === 'dev' ? 'bg-acid text-midnight shadow-[0_0_10px_rgba(57,255,20,0.4)]' : 'text-gray-500 hover:text-gray-300'" class="py-2.5 rounded-lg text-xs font-mono font-bold transition-all uppercase tracking-widest">Dev</button>
             </div>
         </div>
 
+        <div>
+            <p class="text-xs font-mono font-bold text-gray-500 uppercase tracking-widest mb-4" x-text="t('interface') + ' (Language)'">Интерфейс (Язык)</p>
+            <div class="grid grid-cols-3 bg-midnight/60 p-1.5 rounded-xl border border-gray-800">
+                <button @click="lang = 'ru'" :class="lang === 'ru' ? 'bg-electric text-midnight shadow-[0_0_10px_rgba(0,242,254,0.4)]' : 'text-gray-500 hover:text-gray-300'" class="py-2 rounded-lg text-xs font-mono font-bold transition-all uppercase tracking-widest">RU</button>
+                <button @click="lang = 'en'" :class="lang === 'en' ? 'bg-electric text-midnight shadow-[0_0_10px_rgba(0,242,254,0.4)]' : 'text-gray-500 hover:text-gray-300'" class="py-2 rounded-lg text-xs font-mono font-bold transition-all uppercase tracking-widest">EN</button>
+                <button @click="lang = 'et'" :class="lang === 'et' ? 'bg-electric text-midnight shadow-[0_0_10px_rgba(0,242,254,0.4)]' : 'text-gray-500 hover:text-gray-300'" class="py-2 rounded-lg text-xs font-mono font-bold transition-all uppercase tracking-widest">ET</button>
+            </div>
+        </div>
+
         <div class="space-y-4">
-            <p class="text-xs font-mono font-bold text-gray-500 uppercase tracking-widest mb-4">Система</p>
+            <p class="text-xs font-mono font-bold text-gray-500 uppercase tracking-widest mb-4" x-text="t('system')">Система</p>
             
             <button id="pwa-install-btn" style="display: none;"
                     class="w-full flex items-center gap-4 p-4 rounded-xl bg-electric/5 border border-electric/30 hover:border-electric hover:shadow-neon transition-all text-sm font-mono text-gray-300 text-left group cursor-pointer z-20 relative animate-pulse">
                 <span class="text-xl group-hover:scale-110 transition-transform">📱</span> 
-                <span class="group-hover:text-electric transition-colors font-bold text-electric">Установить PWA</span>
+                <span class="group-hover:text-electric transition-colors font-bold text-electric" x-text="t('install_pwa')">Установить PWA</span>
             </button>
 
             <button @click="openModal = 'change_key'" 
                     class="w-full flex items-center gap-4 p-4 rounded-xl bg-midnight/60 border border-gray-800 hover:border-electric/50 hover:shadow-neon transition-all text-sm font-mono text-gray-300 text-left group cursor-pointer z-20 relative">
                 <span class="text-xl group-hover:scale-110 transition-transform">🔑</span> 
-                <span class="group-hover:text-electric transition-colors">Сменить ключ</span>
+                <span class="group-hover:text-electric transition-colors" x-text="t('change_key')">Сменить ключ</span>
             </button>
             
             <button @click="openModal = 'settings'" 
                     class="w-full flex items-center gap-4 p-4 rounded-xl bg-midnight/60 border border-gray-800 hover:border-electric/50 hover:shadow-neon transition-all text-sm font-mono text-gray-300 text-left group cursor-pointer z-20 relative">
                 <span class="text-xl group-hover:scale-110 transition-transform">🎨</span> 
-                <span class="group-hover:text-electric transition-colors">Интерфейс</span>
+                <span class="group-hover:text-electric transition-colors" x-text="t('interface')">Интерфейс</span>
             </button>
 
             <button onclick="window.triggerGame()" 
                     class="w-full flex items-center gap-4 p-4 rounded-xl bg-midnight/60 border border-gray-800 hover:border-acid/50 hover:shadow-[0_0_15px_rgba(57,255,20,0.2)] transition-all text-sm font-mono text-gray-300 text-left group cursor-pointer z-20 relative">
                 <span class="text-xl group-hover:scale-110 transition-transform">🕹️</span> 
-                <span class="group-hover:text-acid transition-colors">Крипто-Прыжок</span>
+                <span class="group-hover:text-acid transition-colors" x-text="t('crypto_jump')">Крипто-Прыжок</span>
             </button>
 
             <button hx-get="/snippets/export" 
                     class="w-full flex items-center gap-4 p-4 rounded-xl bg-midnight/60 border border-gray-800 hover:bg-electric/10 hover:border-electric hover:shadow-neon transition-all text-sm font-mono text-gray-300 text-left group cursor-pointer z-20 relative"
                     onclick="window.location.href='/snippets/export'">
                 <span class="text-xl group-hover:scale-110 transition-transform text-electric">📥</span> 
-                <span class="group-hover:text-electric transition-colors font-bold">Экспорт Архива</span>
+                <span class="group-hover:text-electric transition-colors font-bold" x-text="t('export_archive')">Экспорт Архива</span>
             </button>
         </div>
     </div>
@@ -76,14 +85,15 @@
                     <span class="text-base font-mono font-bold text-gray-200 truncate max-w-[110px]">{{ user.username if user else 'Guest' }}</span>
                     <span class="text-[10px] text-acid font-mono font-bold uppercase tracking-widest shadow-acid-glow flex items-center gap-1.5 mt-1">
                         <span class="w-1.5 h-1.5 rounded-full bg-acid animate-pulse"></span>
-                        В Сети
+                        <span x-text="t('online')">В Сети</span>
                     </span>
                 </div>
             </div>
             
             <button hx-post="/auth/logout" 
                     hx-target="body"
-                    class="p-2 text-gray-500 hover:text-red-500 transition-all hover:drop-shadow-[0_0_10px_rgba(239,68,68,0.8)] cursor-pointer z-20 relative" title="Отключение">
+                    class="p-2 text-gray-500 hover:text-red-500 transition-all hover:drop-shadow-[0_0_10px_rgba(239,68,68,0.8)] cursor-pointer z-20 relative" 
+                    title="Отключение" :title="t('logout_tooltip')">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                 </svg>
