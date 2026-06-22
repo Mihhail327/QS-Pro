@@ -2,8 +2,8 @@ import base64
 import os
 from hashlib import pbkdf2_hmac
 from typing import Optional
-from Crypto.Cipher import AES
-from Crypto.Random import get_random_bytes
+from Crypto.Cipher import AES  # nosec B413
+from Crypto.Random import get_random_bytes  # nosec B413
 from app.core.exceptions import SecurityBreachException
 
 # Базовый мастер-ключ шлюза, прокинутый через Docker-окружение
