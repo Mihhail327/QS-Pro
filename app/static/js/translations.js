@@ -56,7 +56,12 @@ window.TRANSLATIONS = {
         login: "Вход",
         back_to_core: "Вернуться в ядро",
         install_pwa: "Установить PWA",
-        empty_state: "Архивы пусты... 🕵️‍♂️"
+        empty_state: "Архивы пусты... 🕵️‍♂️",
+        theme_title: "Тема оформления",
+        theme_cyber_baroque: "Cyber Baroque (Бирюза)",
+        theme_matrix: "Matrix (Фосфор)",
+        theme_gold: "Gold (Золото)",
+        theme_protocol_88: "Protocol 88 (Синтвейв)"
     },
     en: {
         privacy_title: "[ PRIVACY MODE 2.0 ]",
@@ -115,7 +120,12 @@ window.TRANSLATIONS = {
         login: "Login",
         back_to_core: "Return to Core",
         install_pwa: "Install PWA",
-        empty_state: "Archives are empty... 🕵️‍♂️"
+        empty_state: "Archives are empty... 🕵️‍♂️",
+        theme_title: "Theme",
+        theme_cyber_baroque: "Cyber Baroque (Teal)",
+        theme_matrix: "Matrix (Green)",
+        theme_gold: "Gold (Amber)",
+        theme_protocol_88: "Protocol 88 (Synthwave)"
     },
     et: {
         privacy_title: "[ PRIVAATSUSREŽIIM 2.0 ]",
@@ -174,6 +184,11 @@ window.TRANSLATIONS = {
         login: "Logi sisse",
         back_to_core: "Tagasi tuuma",
         install_pwa: "Paigalda PWA",
-        empty_state: "Arhiivid on tühjad... 🕵️‍♂️"
+        empty_state: "Arhiivid on tühjad... 🕵️‍♂️",
+        theme_title: "Teema",
+        theme_cyber_baroque: "Cyber Baroque (Teeli)",
+        theme_matrix: "Matrix (Roheline)",
+        theme_gold: "Gold (Kuldne)",
+        theme_protocol_88: "Protocol 88 (Süntveiv)"
     }
 };

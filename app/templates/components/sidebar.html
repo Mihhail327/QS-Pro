@@ -39,6 +39,40 @@
             </div>
         </div>
 
+        <div>
+            <p class="text-xs font-mono font-bold text-gray-500 uppercase tracking-widest mb-4" x-text="t('theme_title')">Тема оформления</p>
+            <div class="flex items-center justify-around bg-midnight/60 p-3 rounded-xl border border-gray-800 gap-2">
+                <!-- Cyber Baroque Theme Button -->
+                <button @click="theme = 'cyber-baroque'" 
+                        :class="theme === 'cyber-baroque' ? 'border-electric shadow-neon scale-110' : 'border-gray-700 hover:border-gray-400'"
+                        class="w-8 h-8 rounded-full border-2 transition-all cursor-pointer relative"
+                        style="background: linear-gradient(135deg, #070a13 50%, #00f2fe 50%);"
+                        :title="t('theme_cyber_baroque')">
+                </button>
+                <!-- Matrix Theme Button -->
+                <button @click="theme = 'matrix'" 
+                        :class="theme === 'matrix' ? 'border-electric shadow-neon scale-110' : 'border-gray-700 hover:border-gray-400'"
+                        class="w-8 h-8 rounded-full border-2 transition-all cursor-pointer relative"
+                        style="background: linear-gradient(135deg, #000000 50%, #39ff14 50%);"
+                        :title="t('theme_matrix')">
+                </button>
+                <!-- Gold Theme Button -->
+                <button @click="theme = 'gold'" 
+                        :class="theme === 'gold' ? 'border-electric shadow-neon scale-110' : 'border-gray-700 hover:border-gray-400'"
+                        class="w-8 h-8 rounded-full border-2 transition-all cursor-pointer relative"
+                        style="background: linear-gradient(135deg, #0f0c07 50%, #d4af37 50%);"
+                        :title="t('theme_gold')">
+                </button>
+                <!-- Protocol 88 Theme Button -->
+                <button @click="theme = 'protocol-88'" 
+                        :class="theme === 'protocol-88' ? 'border-electric shadow-neon scale-110' : 'border-gray-700 hover:border-gray-400'"
+                        class="w-8 h-8 rounded-full border-2 transition-all cursor-pointer relative"
+                        style="background: linear-gradient(135deg, #0f0a19 50%, #ec4899 50%);"
+                        :title="t('theme_protocol_88')">
+                </button>
+            </div>
+        </div>
+
         <div class="space-y-4">
             <p class="text-xs font-mono font-bold text-gray-500 uppercase tracking-widest mb-4" x-text="t('system')">Система</p>
             

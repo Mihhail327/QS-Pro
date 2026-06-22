@@ -79,7 +79,7 @@ async def get_user_snippets(session: AsyncSession, user_id: int, category: str =
             # Преобразуем словари из кэша обратно в полноценные объекты Snippet
             return [Snippet(**item) for item in cached_data]
     except Exception as e:
-        logger.error(f"⚠️ Ошибка чтения кэша Redis: {e}")
+        logger.error(f"[ERROR] Ошибка чтения кэша Redis: {e}")
 
     # 2. Postgres
     if category != "all":
@@ -97,6 +97,6 @@ async def get_user_snippets(session: AsyncSession, user_id: int, category: str =
         snippets_data = [json.loads(s.model_dump_json()) for s in snippets]
         await set_snippets_cache(user_id, category, snippets_data)
     except Exception as e:
-        logger.error(f"⚠️ Ошибка записи в кэш Redis: {e}")
+        logger.error(f"[ERROR] Ошибка записи в кэш Redis: {e}")
         
     return list(snippets)

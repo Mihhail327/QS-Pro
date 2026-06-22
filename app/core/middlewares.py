@@ -23,14 +23,14 @@ async def error_handling_middleware(request: Request, call_next):
     try:
         return await call_next(request)
     except SecurityBreachException as e:
-        logger.error(f"🚨 [SECURITY CRITICAL] Нарушение целостности данных! Инвалидация сессии. {e}")
+        logger.error(f"[SECURITY CRITICAL] Нарушение целостности данных! Инвалидация сессии. {e}")
         response = RedirectResponse(url="/auth/login")
         response.delete_cookie("access_token")
         if request.headers.get("HX-Request"):
             response.headers["HX-Redirect"] = "/auth/login"
         return response
     except Exception as e:
-        logger.error(f"⚠️ Глобальный сбой шлюза QuickSnippet Pro: {e}", exc_info=True)
+        logger.error(f"[ERROR] Глобальный сбой шлюза QuickSnippet Pro: {e}", exc_info=True)
         
         if request.headers.get("HX-Request"):
             return HTMLResponse(

@@ -9,7 +9,7 @@ logger = structlog.get_logger(__name__)
 
 async def start_reminder_daemon():
     """Background task runner to periodically check and trigger scheduled reminders."""
-    logger.info("🔔 Background reminder daemon starting up...")
+    logger.info("[REMINDER] Background reminder daemon starting up...")
     while True:
         try:
             # Poll every 10 seconds for due alerts
@@ -28,7 +28,7 @@ async def start_reminder_daemon():
                 if pending_reminders:
                     for s in pending_reminders:
                         logger.warn(
-                            "🔔 [ALERT] Scheduled vault reminder fired!",
+                            "[ALERT] Scheduled vault reminder fired!",
                             snippet_id=s.id,
                             title=s.title,
                             category=s.category,
@@ -40,7 +40,7 @@ async def start_reminder_daemon():
                     await session.commit()
                     
         except asyncio.CancelledError:
-            logger.info("🔔 Background reminder daemon cancelled.")
+            logger.info("[REMINDER] Background reminder daemon cancelled.")
             break
         except Exception as e:
-            logger.error("⚠️ Exception in background reminder daemon", error=str(e))
+            logger.error("[ERROR] Exception in background reminder daemon", error=str(e))

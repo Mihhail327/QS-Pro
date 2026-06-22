@@ -1,3 +1,43 @@
+:root, html[data-theme="cyber-baroque"] {
+    --bg-main: 7 10 19;
+    --bg-glass: 14 23 38;
+    --accent: 0 242 254;
+    --accent-secondary: 57 255 20;
+    --shadow-neon: 0 0 15px rgba(0, 242, 254, 0.15);
+    --shadow-neon-strong: 0 0 25px rgba(0, 242, 254, 0.4);
+    --shadow-acid-glow: 0 0 15px rgba(57, 255, 20, 0.2);
+}
+
+html[data-theme="matrix"] {
+    --bg-main: 0 0 0;
+    --bg-glass: 10 15 10;
+    --accent: 57 255 20;
+    --accent-secondary: 0 200 0;
+    --shadow-neon: 0 0 15px rgba(57, 255, 20, 0.2);
+    --shadow-neon-strong: 0 0 25px rgba(57, 255, 20, 0.5);
+    --shadow-acid-glow: 0 0 15px rgba(0, 200, 0, 0.3);
+}
+
+html[data-theme="gold"] {
+    --bg-main: 15 12 7;
+    --bg-glass: 30 25 15;
+    --accent: 212 175 55;
+    --accent-secondary: 184 134 11;
+    --shadow-neon: 0 0 15px rgba(212, 175, 55, 0.2);
+    --shadow-neon-strong: 0 0 25px rgba(212, 175, 55, 0.5);
+    --shadow-acid-glow: 0 0 15px rgba(184, 134, 11, 0.3);
+}
+
+html[data-theme="protocol-88"] {
+    --bg-main: 15 10 25;
+    --bg-glass: 30 15 45;
+    --accent: 236 72 153;
+    --accent-secondary: 139 92 246;
+    --shadow-neon: 0 0 15px rgba(236, 72, 153, 0.2);
+    --shadow-neon-strong: 0 0 25px rgba(236, 72, 153, 0.5);
+    --shadow-acid-glow: 0 0 15px rgba(139, 92, 246, 0.3);
+}
+
 [x-cloak] { display: none !important; }
 
 .htmx-swapping { opacity: 0; transform: scale(0.9); transition: all 0.5s; }
