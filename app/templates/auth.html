@@ -72,6 +72,7 @@
             <div class="space-y-2">
                 <label class="block text-xs font-mono text-electric/70 ml-1" x-text="t('login_label')">ИДЕНТИФИКАТОР / ЛОГИН</label>
                 <input type="text" name="username" required
+                       @input="$el.value = $el.value.toLowerCase()"
                        autocapitalize="none" autocorrect="off" spellcheck="false" autocomplete="username"
                        class="w-full bg-midnight/50 border border-gray-800 focus:border-electric rounded-xl px-4 py-3 text-gray-200 outline-none transition-all duration-300 placeholder-gray-700 focus:shadow-neon"
                        placeholder="Nexus_ID" :placeholder="t('username_placeholder')">

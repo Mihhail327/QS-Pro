@@ -7,8 +7,7 @@ from fastapi.staticfiles import StaticFiles
 from app.database.config import create_db_and_tables
 from app.routes import auth, snippets, home
 from app.core.middlewares import error_handling_middleware, rellix_security_audit_layer
-
-logging.basicConfig(level=logging.INFO)
+from app.core.logging_config import setup_logging_and_telemetry
 
 app = FastAPI(
     title="RellixCore :: QuickSnippet Pro",
@@ -16,6 +15,8 @@ app = FastAPI(
     version="1.0.0-Senior",
     docs_url="/docs"
 )
+
+setup_logging_and_telemetry(app)
 
 # 🛡️ Активируем слои защиты и перехвата ошибок
 app.middleware("http")(error_handling_middleware)
@@ -43,12 +44,7 @@ app.mount("/static", StaticFiles(directory="app/static"), name="static")
 async def on_startup():
     print("""
     ===================================================
-     ██████╗ ███████╗██╗     ██╗    ██╗██╗  ██╗
-     ██╔══██╗██╔════╝██║     ██║    ██║╚██╗██╔╝
-     ██████╔╝█████╗  ██║     ██║    ██║ ╚███╔╝ 
-     ██╔══██╗██╔══╝  ██║     ██║    ██║ ██╔██╗ 
-     ██║  ██║███████╗███████╗███████╗██║██╔╝ ██╗
-     ╚═╝  ╚═╝╚══════╝╚══════╝╚══════╝╚═╝╚═╝  ╚═╝ CORE
+     R E L L I X   C O R E
     ===================================================
     :: QuickSnippet Pro Framework v1.0.0 ::
     :: Authored by NexO_ | Distributed by RellixCore ::
