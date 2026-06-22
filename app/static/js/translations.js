@@ -1,4 +1,4 @@
-const TRANSLATIONS = {
+window.TRANSLATIONS = {
     ru: {
         privacy_title: "[ PRIVACY MODE 2.0 ]",
         privacy_desc: "Обнаружено бездействие. Двиньте мышью для дешифровки.",
@@ -11,6 +11,8 @@ const TRANSLATIONS = {
         change_key: "Сменить ключ",
         interface: "Интерфейс",
         crypto_jump: "Крипто-Прыжок",
+        game_instructions: "Нажми ПРОБЕЛ или тапни по экрану",
+        close_terminal: "Закрыть терминал",
         export_archive: "Экспорт Архива",
         online: "В Сети",
         logout: "Выйти",
@@ -68,6 +70,8 @@ const TRANSLATIONS = {
         change_key: "Change Key",
         interface: "Interface",
         crypto_jump: "Crypto-Jump",
+        game_instructions: "Press SPACEBAR or tap the screen",
+        close_terminal: "Close Terminal",
         export_archive: "Export Archive",
         online: "Online",
         logout: "Logout",
@@ -125,6 +129,8 @@ const TRANSLATIONS = {
         change_key: "Muuda võtit",
         interface: "Liides",
         crypto_jump: "Krüpto-Hüpe",
+        game_instructions: "Vajuta TÜHIKUT või puuduta ekraani",
+        close_terminal: "Sulge terminal",
         export_archive: "Arhiivi eksport",
         online: "Online",
         logout: "Logi välja",

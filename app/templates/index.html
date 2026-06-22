@@ -42,7 +42,7 @@
           lang: localStorage.getItem('lang') || 'ru',
 
           t(key) {
-              return (window.TRANSLATIONS && TRANSLATIONS[this.lang] && TRANSLATIONS[this.lang][key]) || key;
+              return (window.TRANSLATIONS && window.TRANSLATIONS[this.lang] && window.TRANSLATIONS[this.lang][key]) || key;
           },
 
           resetTimer() {
