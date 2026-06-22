@@ -67,9 +67,39 @@
 <div x-show="openModal === 'change_key'" x-cloak class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-midnight/90 backdrop-blur-md">
     <div @click.away="openModal = null" class="bg-darkglass border border-red-500/40 rounded-3xl w-full max-w-md p-8 shadow-[0_0_25px_rgba(239,68,68,0.15)]">
         <h2 class="text-2xl font-black text-red-500 uppercase mb-6">Смена Ключа</h2>
-        <form hx-post="/auth/change-password" hx-target="#key-msg" class="space-y-4">
-            <input type="password" name="old_password" placeholder="Текущий ключ" required class="w-full bg-midnight border border-gray-800 rounded-xl p-3 text-sm font-mono">
-            <input type="password" name="new_password" placeholder="Новый ключ" required class="w-full bg-midnight border border-gray-800 rounded-xl p-3 text-sm font-mono">
+        <form hx-post="/auth/change-password" hx-target="#key-msg" class="space-y-4" x-data="{ showOld: false, showNew: false }">
+            <div class="relative">
+                <input :type="showOld ? 'text' : 'password'" name="old_password" placeholder="Текущий ключ" required 
+                       class="w-full bg-midnight border border-gray-800 rounded-xl pl-3 pr-10 py-3 text-sm font-mono text-gray-200 outline-none focus:border-red-500/50">
+                <button type="button" @click="showOld = !showOld" 
+                        class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-red-500 transition-colors focus:outline-none">
+                    <!-- Eye Open -->
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-show="!showOld">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                    </svg>
+                    <!-- Eye Closed -->
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-show="showOld" style="display: none;">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18" />
+                    </svg>
+                </button>
+            </div>
+            <div class="relative">
+                <input :type="showNew ? 'text' : 'password'" name="new_password" placeholder="Новый ключ" required 
+                       class="w-full bg-midnight border border-gray-800 rounded-xl pl-3 pr-10 py-3 text-sm font-mono text-gray-200 outline-none focus:border-red-500/50">
+                <button type="button" @click="showNew = !showNew" 
+                        class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-red-500 transition-colors focus:outline-none">
+                    <!-- Eye Open -->
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-show="!showNew">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                    </svg>
+                    <!-- Eye Closed -->
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-show="showNew" style="display: none;">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18" />
+                    </svg>
+                </button>
+            </div>
             <div id="key-msg"></div>
             <button type="submit" class="w-full bg-red-500/10 border border-red-500 text-red-500 py-3 rounded-xl font-bold uppercase">Перезаписать</button>
         </form>

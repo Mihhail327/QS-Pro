@@ -127,6 +127,9 @@
     <script src="/static/js/game.js"></script>
     
     <script>
+        let deferredPrompt;
+        const installBtn = document.getElementById('pwa-install-btn');
+
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('/sw.js')
@@ -134,6 +137,43 @@
                     .catch(err => console.error('❌ Ошибка SW:', err));
             });
         }
+
+        // Ловим событие возможности установки PWA
+        window.addEventListener('beforeinstallprompt', (e) => {
+            // Предотвращаем автоматическое появление мини-инфобара на мобильных
+            e.preventDefault();
+            // Сохраняем событие
+            deferredPrompt = e;
+            // Показываем кнопку установки в интерфейсе
+            if (installBtn) {
+                installBtn.style.display = 'flex';
+            }
+        });
+
+        // Навешиваем обработчик клика на кнопку установки
+        if (installBtn) {
+            installBtn.addEventListener('click', async () => {
+                if (!deferredPrompt) return;
+                // Показываем диалог установки
+                deferredPrompt.prompt();
+                // Ждем ответа пользователя
+                const { outcome } = await deferredPrompt.userChoice;
+                console.log(`[PWA] Выбор пользователя: ${outcome}`);
+                // Очищаем сохраненное событие, так как его нельзя переиспользовать
+                deferredPrompt = null;
+                // Скрываем кнопку
+                installBtn.style.display = 'none';
+            });
+        }
+
+        // Отслеживаем успешную установку приложения
+        window.addEventListener('appinstalled', (event) => {
+            console.log('🚀 [PWA] Приложение успешно установлено на устройство!');
+            deferredPrompt = null;
+            if (installBtn) {
+                installBtn.style.display = 'none';
+            }
+        });
     </script>
 </body>
 </html>

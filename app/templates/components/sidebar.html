@@ -33,6 +33,12 @@
         <div class="space-y-4">
             <p class="text-xs font-mono font-bold text-gray-500 uppercase tracking-widest mb-4">Система</p>
             
+            <button id="pwa-install-btn" style="display: none;"
+                    class="w-full flex items-center gap-4 p-4 rounded-xl bg-electric/5 border border-electric/30 hover:border-electric hover:shadow-neon transition-all text-sm font-mono text-gray-300 text-left group cursor-pointer z-20 relative animate-pulse">
+                <span class="text-xl group-hover:scale-110 transition-transform">📱</span> 
+                <span class="group-hover:text-electric transition-colors font-bold text-electric">Установить PWA</span>
+            </button>
+
             <button @click="openModal = 'change_key'" 
                     class="w-full flex items-center gap-4 p-4 rounded-xl bg-midnight/60 border border-gray-800 hover:border-electric/50 hover:shadow-neon transition-all text-sm font-mono text-gray-300 text-left group cursor-pointer z-20 relative">
                 <span class="text-xl group-hover:scale-110 transition-transform">🔑</span> 
