@@ -1,4 +1,4 @@
-const CACHE_NAME = 'qs-pro-v3-cyber-baroque';
+const CACHE_NAME = 'qs-pro-v4-cyber-baroque';
 
 const STATIC_ASSETS = [
     '/',
