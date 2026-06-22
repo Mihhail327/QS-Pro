@@ -15,9 +15,23 @@ async def register_user(username: str, password: str, is_dev: bool, session: Asy
 
     if not validate_password_strength(password):
         analysis = password_analyzer(password)
-        recommendation = "Пароль слишком слаб (низкая энтропия)."
+        recommendation = "Пароль слишком слаб. Используйте минимум 8 символов, включая заглавные буквы (A-Z), строчные буквы (a-z), цифры и спецсимволы (!, @, #, $)."
         if analysis and isinstance(analysis, dict) and analysis.get("recommendations"):
-            recommendation = analysis["recommendations"][0]
+            raw_rec = analysis["recommendations"][0]
+            # Заменяем битые символы кодировки в рекомендации на человекочитаемый русский текст
+            if "\ufffd" in raw_rec:
+                if "8" in raw_rec:
+                    recommendation = "Пароль слишком короткий. Используйте минимум 8 символов."
+                elif "a-z" in raw_rec:
+                    recommendation = "Пароль должен содержать строчные латинские буквы (a-z)."
+                elif "A-Z" in raw_rec:
+                    recommendation = "Пароль должен содержать заглавные латинские буквы (A-Z)."
+                elif "!" in raw_rec or "@" in raw_rec or "#" in raw_rec or "$" in raw_rec:
+                    recommendation = "Пароль должен содержать спецсимволы (например: !, @, #, $)."
+                elif "12+" in raw_rec:
+                    recommendation = "Рекомендуется использовать пароль длиной более 12 символов."
+            else:
+                recommendation = raw_rec
         return False, recommendation
 
     statement = select(User).where(User.username == username)

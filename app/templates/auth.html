@@ -58,6 +58,7 @@
                 <label class="block text-xs font-mono text-electric/70 ml-1">КРИПТО-КЛЮЧ / ПАРОЛЬ</label>
                 <div class="relative">
                     <input :type="showPassword ? 'text' : 'password'" name="password" required
+                           autocapitalize="none" autocorrect="off" spellcheck="false"
                            class="w-full bg-midnight/50 border border-gray-800 focus:border-electric rounded-xl pl-4 pr-12 py-3 text-gray-200 outline-none transition-all duration-300 placeholder-gray-700 focus:shadow-neon"
                            placeholder="••••••••••••">
                     <button type="button" @click="showPassword = !showPassword" 
