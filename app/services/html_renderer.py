@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import List, Optional
 from app.models.snippet import Snippet
 from app.auth.crypto import decrypt_data
@@ -30,6 +31,19 @@ def render_snippet_cards(snippets: List[Snippet], salt: str, search_query: Optio
         accent = "acid" if s.category.lower() in ["study", "учеба"] else "electric"
         shadow = "hover:shadow-[0_0_15px_rgba(57,255,20,0.1)]" if accent == "acid" else "hover:shadow-neon"
 
+        # Безопасное форматирование даты (обрабатываем случай, когда из кэша Redis возвращается str)
+        created_at_val = s.created_at
+        if isinstance(created_at_val, str):
+            try:
+                created_at_val = datetime.fromisoformat(created_at_val.replace("Z", "+00:00"))
+            except ValueError:
+                pass
+
+        if isinstance(created_at_val, datetime):
+            created_at_str = created_at_val.strftime('%d.%m.%Y %H:%M')
+        else:
+            created_at_str = str(created_at_val)[:16].replace("T", " ")
+
         html += f"""
         <div id="snippet-{s.id}" class="bg-darkglass/50 backdrop-blur-md border border-gray-800 rounded-2xl p-6 transition-all duration-300 group hover:border-{accent}/50 {shadow} flex flex-col">
             <div class="flex justify-between items-start mb-5">
@@ -57,7 +71,7 @@ def render_snippet_cards(snippets: List[Snippet], salt: str, search_query: Optio
             {f'<div class="mt-4 hidden"><p id="note-{s.id}">{safe_note}</p></div>' if safe_note else ''}
             
             <div class="mt-5 pt-4 border-t border-gray-800/60 flex justify-between items-center text-xs text-gray-500 font-mono">
-                <span>{s.created_at.strftime('%d.%m.%Y %H:%M')}</span>
+                <span>{created_at_str}</span>
             </div>
         </div>
         """

@@ -1,6 +1,7 @@
 import logging
 import os
 from fastapi import FastAPI
+from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
 from app.database.config import create_db_and_tables
@@ -19,6 +20,15 @@ app = FastAPI(
 # 🛡️ Активируем слои защиты и перехвата ошибок
 app.middleware("http")(error_handling_middleware)
 app.middleware("http")(rellix_security_audit_layer)
+
+# 🔌 Маршруты для PWA (должны отдаваться от корня для верной области видимости SW)
+@app.get("/sw.js")
+async def serve_sw():
+    return FileResponse("app/static/js/sw.js", media_type="application/javascript")
+
+@app.get("/manifest.json")
+async def serve_manifest():
+    return FileResponse("app/static/js/manifest.json", media_type="application/json")
 
 # 🔌 Подключаем кроссплатформенные REST-роутеры
 app.include_router(home.router)

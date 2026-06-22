@@ -7,7 +7,7 @@ const STATIC_ASSETS = [
     '/static/js/game.js',
     '/static/js/icon-192.png',
     '/static/js/icon-512.png',
-    '/static/js/manifest.json'
+    '/manifest.json'
 ];
 
 // 1. УСТАНОВКА: Прокачиваем кэш
