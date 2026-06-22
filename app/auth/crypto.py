@@ -4,6 +4,7 @@ from hashlib import pbkdf2_hmac
 from typing import Optional
 from Crypto.Cipher import AES
 from Crypto.Random import get_random_bytes
+from app.core.exceptions import SecurityBreachException
 
 # Базовый мастер-ключ шлюза, прокинутый через Docker-окружение
 SECRET_KEY = os.getenv("SECRET_KEY", "GITS_SECTION_9_ULTRA_SECRET_2026_KEY_NEXO").encode()
@@ -66,4 +67,4 @@ def decrypt_data(crypto_text: str, user_salt: str, category: str) -> Optional[st
         
     except (ValueError, KeyError, TypeError) as e:
         print(f"⚠️ [SECURITY CRITICAL] Попытка подмены зашифрованных данных! Контекст: {e}")
-        return None
+        raise SecurityBreachException("Integrity check failed: ciphertext tampered or key shifting mismatch.") from e

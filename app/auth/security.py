@@ -57,6 +57,12 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -
 def get_current_user_from_cookie(request: Request) -> Optional[int]:
     token = request.cookies.get("access_token")
     if not token:
+        # Проверяем заголовок Authorization (для Flet-клиента)
+        auth_header = request.headers.get("Authorization")
+        if auth_header and auth_header.startswith("Bearer "):
+            token = auth_header.split(" ")[1]
+            
+    if not token:
         return None
         
     try:

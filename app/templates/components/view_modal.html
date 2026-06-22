@@ -25,7 +25,20 @@
                 </div>
             </template>
 
-            <pre class="text-gray-200 whitespace-pre-wrap text-sm md:text-base font-mono leading-relaxed" x-text="viewData.text"></pre>
+            <button 
+                @click="navigator.clipboard.writeText(viewData.text); $el.innerText = 'Скопировано!'; setTimeout(() => $el.innerText = 'Копировать', 2000)"
+                class="absolute top-4 right-6 text-xs font-mono text-electric border border-electric/50 px-2 py-1 rounded hover:bg-electric/20 transition-all">
+                Копировать
+            </button>
+
+            <pre class="rounded-xl overflow-hidden bg-black/50 border border-white/5">
+                <code :class="'language-' + (viewData.language || 'text')" 
+                    x-init="$watch('viewData.text', value => {
+                        $nextTick(() => Prism.highlightAll());
+                    })" 
+                    x-text="viewData.text">
+                </code>
+            </pre>
             
             <template x-if="viewData.note">
                 <div class="mt-6 p-4 bg-black/40 rounded-xl border-l-2 border-acid/40">
@@ -41,3 +54,4 @@
         </div>
     </div>
 </div>
+

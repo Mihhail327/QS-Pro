@@ -46,9 +46,11 @@ self.addEventListener('fetch', (event) => {
         event.respondWith(
             fetch(request)
                 .then((response) => {
-                    // Если сеть есть, сохраняем свежий ответ в кэш для будущих оффлайн сессий
-                    const clone = response.clone();
-                    caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
+                    // Если сеть есть и метод GET, сохраняем свежий ответ в кэш для будущих оффлайн сессий
+                    if (request.method === 'GET' && response.status === 200) {
+                        const clone = response.clone();
+                        caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
+                    }
                     return response;
                 })
                 .catch(() => {
@@ -79,7 +81,7 @@ self.addEventListener('fetch', (event) => {
         caches.match(request).then((cachedResponse) => {
             return cachedResponse || fetch(request).then((networkResponse) => {
                 // Динамически кэшируем загруженные картинки (например, из Pillow)
-                if (request.url.includes('/static/')) {
+                if (request.method === 'GET' && networkResponse.status === 200 && request.url.includes('/static/')) {
                     const clone = networkResponse.clone();
                     caches.open(CACHE_NAME).then(cache => cache.put(request, clone));
                 }

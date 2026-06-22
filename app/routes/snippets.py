@@ -69,7 +69,13 @@ async def create_snippet(
         except Exception:
             return HTMLResponse(content="<span class='text-red-400 font-mono'>❌ Ошибка медиа: неверный формат</span>", status_code=400)
 
-    # 2. ПЕРЕДАЕМ ССЫЛКУ В СЕРВИС
+    # 2. ВАЛИДАЦИЯ СВЯЗИ (NEXUS LINKS) ДЛЯ ЗАЩИТЫ ОТ BOLA И КРАША БД
+    if parent_snippet_id:
+        parent_snippet = await session.get(Snippet, parent_snippet_id)
+        if not parent_snippet or parent_snippet.user_id != user.id:
+            return HTMLResponse(content="<span class='text-red-400 font-mono'>❌ Ошибка: Родоначальный сниппет не найден или недоступен</span>", status_code=400)
+
+    # 3. ПЕРЕХОД К СОЗДАНИЮ СНИППЕТА В СЕРВИСЕ
     await create_new_snippet(
         session, user, category, content, sub_category, note, 
         tags, parent_snippet_id, reminder_at, final_image_url, clean_title

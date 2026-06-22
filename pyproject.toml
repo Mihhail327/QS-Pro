@@ -29,6 +29,8 @@ dependencies = [
     "asyncpg (>=0.31.0,<0.32.0)",
     "psycopg2-binary (>=2.9.12,<3.0.0)",
     "securitycore (>=1.2.2,<2.0.0)",
+    "redis (>=8.0.0,<9.0.0)",
+    "pygments (>=2.20.0,<3.0.0)",
 ]
 
 

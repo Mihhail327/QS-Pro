@@ -1,3 +1,4 @@
+import json
 from fastapi import APIRouter, Depends, Request, Response, Form
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse
@@ -63,6 +64,7 @@ async def login_page(request: Request):
 
 @router.post("/login")
 async def login(
+    request: Request,
     username: str = Form(...),
     password: str = Form(...),
     session: AsyncSession = Depends(get_session)
@@ -70,17 +72,24 @@ async def login(
     user, error_msg = await authenticate_user(username.strip(), password, session)
     
     if not user:
+        # Для Flet-клиента или API-запросов отдаем JSON
+        if "application/json" in request.headers.get("accept", "").lower() or not request.headers.get("hx-request"):
+            return Response(content=json.dumps({"detail": error_msg}), media_type="application/json", status_code=401)
         return HTMLResponse(content=f"<span class='text-red-400 font-mono'>❌ {error_msg}</span>")
 
     # Создаем токен
     token = create_access_token(data={"sub": str(user.id)})
     
+    # Для Flet-клиента или API-запросов отдаем JSON
+    if "application/json" in request.headers.get("accept", "").lower() or not request.headers.get("hx-request"):
+        return {"access_token": token, "token_type": "bearer"}
+
     # 1. Формируем финальный объект ответа
     final_response = HTMLResponse(
         content="<span class='text-electric font-mono shadow-electric'>Авторизация пройдена... Вход в ядро.</span>"
     )
     
-    # 2. Вешаем броню (куки) прямо на этот ответ
+    # 2. Вешаем куки
     final_response.set_cookie(
         key="access_token", value=token, httponly=True, samesite="lax", secure=False 
     )

@@ -1,6 +1,7 @@
 from datetime import datetime
 from typing import List, Optional
 from sqlmodel import Field, Relationship, SQLModel
+from sqlalchemy import Column, Integer, ForeignKey
 
 
 class User(SQLModel, table=True):
@@ -43,7 +44,10 @@ class Snippet(SQLModel, table=True):
     is_notified: bool = Field(default=False, index=True)
     
     # ТЗ: Nexus Links (Реляционный Граф Связей — Self-referencing Foreign Key)
-    parent_snippet_id: Optional[int] = Field(default=None, foreign_key="snippet.id", index=True)
+    parent_snippet_id: Optional[int] = Field(
+        default=None,
+        sa_column=Column(Integer, ForeignKey("snippet.id", ondelete="SET NULL"), nullable=True, index=True)
+    )
     
     # ТЗ: Local-First Синхронизация (Контроль версий для оффлайн-работы во Flet)
     version: int = Field(default=1, nullable=False)

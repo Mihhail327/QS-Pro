@@ -1,8 +1,9 @@
 import logging
 from fastapi import Request
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from securitycore.integrations import SecurityAuditMiddleware
+from app.core.exceptions import SecurityBreachException
 
 logger = logging.getLogger(__name__)
 templates = Jinja2Templates(directory="app/templates")
@@ -21,6 +22,13 @@ async def error_handling_middleware(request: Request, call_next):
     
     try:
         return await call_next(request)
+    except SecurityBreachException as e:
+        logger.error(f"🚨 [SECURITY CRITICAL] Нарушение целостности данных! Инвалидация сессии. {e}")
+        response = RedirectResponse(url="/auth/login")
+        response.delete_cookie("access_token")
+        if request.headers.get("HX-Request"):
+            response.headers["HX-Redirect"] = "/auth/login"
+        return response
     except Exception as e:
         logger.error(f"⚠️ Глобальный сбой шлюза QuickSnippet Pro: {e}", exc_info=True)
         
