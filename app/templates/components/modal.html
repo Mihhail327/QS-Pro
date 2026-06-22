@@ -53,17 +53,6 @@
     </div>
 </div>
 
-<div x-show="openModal === 'settings'" x-cloak class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-midnight/90 backdrop-blur-md">
-    <div @click.away="openModal = null" class="bg-darkglass border border-electric/40 rounded-3xl w-full max-w-md p-8 shadow-neon-strong">
-        <h2 class="text-2xl font-black text-electric uppercase mb-6" x-text="t('interface')">Интерфейс</h2>
-        <label class="flex items-center justify-between p-4 bg-midnight/50 border border-gray-800 rounded-xl cursor-pointer">
-            <p class="text-electric font-bold" x-text="t('crt_effect')">CRT-Эффект</p>
-            <input type="checkbox" x-model="crtEffect" class="w-5 h-5 accent-electric">
-        </label>
-        <button @click="openModal = null" class="w-full mt-6 text-gray-500 hover:text-red-500 uppercase text-xs" x-text="t('close')">Закрыть</button>
-    </div>
-</div>
-
 <div x-show="openModal === 'change_key'" x-cloak class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-midnight/90 backdrop-blur-md">
     <div @click.away="openModal = null" class="bg-darkglass border border-red-500/40 rounded-3xl w-full max-w-md p-8 shadow-[0_0_25px_rgba(239,68,68,0.15)]">
         <h2 class="text-2xl font-black text-red-500 uppercase mb-6" x-text="t('change_key_title')">Смена Ключа</h2>

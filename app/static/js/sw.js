@@ -1,4 +1,4 @@
-const CACHE_NAME = 'qs-pro-v2-cyber-baroque';
+const CACHE_NAME = 'qs-pro-v3-cyber-baroque';
 
 const STATIC_ASSETS = [
     '/',
@@ -150,7 +150,7 @@ self.addEventListener('activate', (event) => {
                         return caches.delete(key);
                     })
             );
-        })
+        }).then(() => self.clients.claim())
     );
 });
 

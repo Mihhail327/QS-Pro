@@ -41,35 +41,47 @@
 
         <div>
             <p class="text-xs font-mono font-bold text-gray-500 uppercase tracking-widest mb-4" x-text="t('theme_title')">Тема оформления</p>
-            <div class="flex items-center justify-around bg-midnight/60 p-3 rounded-xl border border-gray-800 gap-2">
-                <!-- Cyber Baroque Theme Button -->
-                <button @click="theme = 'cyber-baroque'" 
-                        :class="theme === 'cyber-baroque' ? 'border-electric shadow-neon scale-110' : 'border-gray-700 hover:border-gray-400'"
-                        class="w-8 h-8 rounded-full border-2 transition-all cursor-pointer relative"
-                        style="background: linear-gradient(135deg, #070a13 50%, #00f2fe 50%);"
-                        :title="t('theme_cyber_baroque')">
-                </button>
-                <!-- Matrix Theme Button -->
-                <button @click="theme = 'matrix'" 
-                        :class="theme === 'matrix' ? 'border-electric shadow-neon scale-110' : 'border-gray-700 hover:border-gray-400'"
-                        class="w-8 h-8 rounded-full border-2 transition-all cursor-pointer relative"
-                        style="background: linear-gradient(135deg, #000000 50%, #39ff14 50%);"
-                        :title="t('theme_matrix')">
-                </button>
-                <!-- Gold Theme Button -->
-                <button @click="theme = 'gold'" 
-                        :class="theme === 'gold' ? 'border-electric shadow-neon scale-110' : 'border-gray-700 hover:border-gray-400'"
-                        class="w-8 h-8 rounded-full border-2 transition-all cursor-pointer relative"
-                        style="background: linear-gradient(135deg, #0f0c07 50%, #d4af37 50%);"
-                        :title="t('theme_gold')">
-                </button>
-                <!-- Protocol 88 Theme Button -->
-                <button @click="theme = 'protocol-88'" 
-                        :class="theme === 'protocol-88' ? 'border-electric shadow-neon scale-110' : 'border-gray-700 hover:border-gray-400'"
-                        class="w-8 h-8 rounded-full border-2 transition-all cursor-pointer relative"
-                        style="background: linear-gradient(135deg, #0f0a19 50%, #ec4899 50%);"
-                        :title="t('theme_protocol_88')">
-                </button>
+            <div class="flex flex-col bg-midnight/60 p-3 rounded-xl border border-gray-800 gap-4">
+                <!-- Сетка круглых кнопок тем -->
+                <div class="flex items-center justify-around gap-2">
+                    <!-- Cyber Baroque Theme Button -->
+                    <button @click="theme = 'cyber-baroque'" 
+                            :class="theme === 'cyber-baroque' ? 'border-electric shadow-neon scale-110' : 'border-gray-700 hover:border-gray-400'"
+                            class="w-8 h-8 rounded-full border-2 transition-all cursor-pointer relative"
+                            style="background: linear-gradient(135deg, #070a13 50%, #00f2fe 50%);"
+                            :title="t('theme_cyber_baroque')">
+                    </button>
+                    <!-- Matrix Theme Button -->
+                    <button @click="theme = 'matrix'" 
+                            :class="theme === 'matrix' ? 'border-electric shadow-neon scale-110' : 'border-gray-700 hover:border-gray-400'"
+                            class="w-8 h-8 rounded-full border-2 transition-all cursor-pointer relative"
+                            style="background: linear-gradient(135deg, #000000 50%, #39ff14 50%);"
+                            :title="t('theme_matrix')">
+                    </button>
+                    <!-- Gold Theme Button -->
+                    <button @click="theme = 'gold'" 
+                            :class="theme === 'gold' ? 'border-electric shadow-neon scale-110' : 'border-gray-700 hover:border-gray-400'"
+                            class="w-8 h-8 rounded-full border-2 transition-all cursor-pointer relative"
+                            style="background: linear-gradient(135deg, #0f0c07 50%, #d4af37 50%);"
+                            :title="t('theme_gold')">
+                    </button>
+                    <!-- Protocol 88 Theme Button -->
+                    <button @click="theme = 'protocol-88'" 
+                            :class="theme === 'protocol-88' ? 'border-electric shadow-neon scale-110' : 'border-gray-700 hover:border-gray-400'"
+                            class="w-8 h-8 rounded-full border-2 transition-all cursor-pointer relative"
+                            style="background: linear-gradient(135deg, #0f0a19 50%, #ec4899 50%);"
+                            :title="t('theme_protocol_88')">
+                    </button>
+                </div>
+
+                <!-- CRT Toggle Switch -->
+                <div class="flex items-center justify-between border-t border-gray-800/60 pt-3">
+                    <span class="text-xs font-mono font-bold text-gray-400 uppercase tracking-wider" x-text="t('crt_effect')">CRT-Эффект</span>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" x-model="crtEffect" class="sr-only peer">
+                        <div class="w-9 h-5 bg-gray-800 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-gray-400 peer-checked:after:bg-electric after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-electric/20 border border-gray-700 peer-checked:border-electric"></div>
+                    </label>
+                </div>
             </div>
         </div>
 
@@ -86,12 +98,6 @@
                     class="w-full flex items-center gap-4 p-4 rounded-xl bg-midnight/60 border border-gray-800 hover:border-electric/50 hover:shadow-neon transition-all text-sm font-mono text-gray-300 text-left group cursor-pointer z-20 relative">
                 <span class="text-xl group-hover:scale-110 transition-transform">🔑</span> 
                 <span class="group-hover:text-electric transition-colors" x-text="t('change_key')">Сменить ключ</span>
-            </button>
-            
-            <button @click="openModal = 'settings'" 
-                    class="w-full flex items-center gap-4 p-4 rounded-xl bg-midnight/60 border border-gray-800 hover:border-electric/50 hover:shadow-neon transition-all text-sm font-mono text-gray-300 text-left group cursor-pointer z-20 relative">
-                <span class="text-xl group-hover:scale-110 transition-transform">🎨</span> 
-                <span class="group-hover:text-electric transition-colors" x-text="t('interface')">Интерфейс</span>
             </button>
 
             <button onclick="window.triggerGame()" 
