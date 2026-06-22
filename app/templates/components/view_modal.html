@@ -32,7 +32,7 @@
                 Копировать
             </button>
 
-            <pre class="rounded-xl overflow-hidden bg-black/50 border border-white/5"><code :class="'language-' + (viewData.language || 'text')" x-init="$watch('viewData.text', value => { $nextTick(() => Prism.highlightAll()); })" x-text="viewData.text"></code></pre>
+            <pre class="rounded-xl whitespace-pre-wrap break-words overflow-x-hidden bg-black/50 border border-white/5"><code class="!whitespace-pre-wrap !break-words" :class="'language-' + (viewData.language || 'text')" x-init="$watch('viewData.text', value => { $nextTick(() => Prism.highlightAll()); })" x-text="viewData.text"></code></pre>
             
             <template x-if="viewData.note">
                 <div class="mt-6 p-4 bg-black/40 rounded-xl border-l-2 border-acid/40">
