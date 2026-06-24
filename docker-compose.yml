@@ -8,15 +8,15 @@ services:
     container_name: qspro_app
     restart: always
     ports:
-      - "8000:8000"
+      - "${APP_PORT}:8000"
     volumes:
       - .:/code
     environment:
-      - DATABASE_URL=postgresql://cyber_admin:baroque_pass@db:5432/qspro_vault
-      - REDIS_URL=redis://redis:6379/0
-      - SECRET_KEY=GITS_SECTION_9_ULTRA_SECRET_2026_KEY_NEXO
-      - ALGORITHM=HS256
-      - ACCESS_TOKEN_EXPIRE_MINUTES=1440
+      - DATABASE_URL=${DATABASE_URL}
+      - REDIS_URL=${REDIS_URL}
+      - SECRET_KEY=${SECRET_KEY}
+      - ALGORITHM=${ALGORITHM}
+      - ACCESS_TOKEN_EXPIRE_MINUTES=${ACCESS_TOKEN_EXPIRE_MINUTES}
     depends_on:
       - db
       - redis
@@ -27,11 +27,11 @@ services:
     container_name: qspro_db
     restart: always
     environment:
-      - POSTGRES_USER=cyber_admin
-      - POSTGRES_PASSWORD=baroque_pass
-      - POSTGRES_DB=qspro_vault
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
     ports:
-      - "5432:5432"
+      - "${DB_PORT}:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
@@ -41,7 +41,7 @@ services:
     container_name: qspro_redis
     restart: always
     ports:
-      - "6379:6379"
+      - "${REDIS_PORT}:6379"
     volumes:
       - redis_data:/data
 
